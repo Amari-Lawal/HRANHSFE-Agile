@@ -2,9 +2,8 @@
 1. DB User Auth and role based $
 2. Assets Setup DB
 3. Improve Unittest Setup
-4. Create asset view relationships/
-5. Create user interface.
-6. Create validations on UI
+4. Create user interface.
+5. Create validations on UI
 6. Deploy to Google Cloud - See how DB will be deployed.
 
 ## DB Schema Below
@@ -46,4 +45,5 @@ image_url	VARCHAR / TEXT	URL or path to image of the asset
 created_at	TIMESTAMP	Record creation timestamp
 updated_at	TIMESTAMP	Record last update timestamp
 
-3. User Asset View Permission Table 3. -  user_id | asset_id
+3. Possibly think what 3 table may be for 
+-- User Asset View Permission Table 3. -  user_id | asset_id
