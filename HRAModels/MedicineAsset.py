@@ -1,10 +1,12 @@
-from pydantic import BaseModel, UUID4, HttpUrl, Field
+from pydantic import BaseModel, UUID4, HttpUrl, Field,computed_field
 from typing import Optional, Union
 from datetime import date, datetime
 from decimal import Decimal
 from typing import ClassVar
 import uuid
 from HRANHSExceptions import FieldNotExistException
+from HRANHSDB import HRANHSCRUD
+from HRAModels import Vendor
 class MedicineAsset(BaseModel):
     MEDICINEASSETSTABLENAME: ClassVar[str] = "medical_assets"
     medicine_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -14,7 +16,6 @@ class MedicineAsset(BaseModel):
     lot_number: str
     manufacture_date: date
     purchase_cost: float
-    vendor: str
     storage_location: str
     status: str
     expiration_date: date
@@ -47,6 +48,14 @@ class MedicineAsset(BaseModel):
     "TIMESTAMP",    # created_at (TIMESTAMP)
     "TIMESTAMP",    # updated_at (TIMESTAMP)
 )
+    @computed_field
+    def get_vendor_name(self) -> str:
+        hracrud = HRANHSCRUD()
+        hracrud.hranhssql.run_command("")
+        #condition = f"{Vendor.get_field_name("vendor_name")} = '{self.vendor_name}'"
+        #result = hracrud.get_data(("vendor_id",),Vendor.VENDORTABLENAME,condition=condition)
+        #next((item for item in result if item["vendor_name"] == MedicineAsset.get_field_name("medicine_asset")), None)
+        #return str(uuid.uuid4())
     
     @classmethod
     def fields_to_tuple(cls) -> tuple:
