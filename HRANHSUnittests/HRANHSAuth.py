@@ -8,6 +8,7 @@ uri = "http://127.0.0.1:8080" #"https://blacktechdivisionreward-hrjw5cc7pa-uc.a.
 class HRANHSAuth(unittest.TestCase):
     EMAIL = "alice.johnson@example.com"
     PASSWORD = "hello" 
+    MEDICINE_ASSET="Aspirin"
     def signup(self):
         response = requests.post(f"{uri}/api/v1/signup",json={
         "first_name": "Alice",
@@ -47,7 +48,7 @@ class HRANHSAuth(unittest.TestCase):
         access_token = response.json()["access_token"]
         headers = {"Authorization": f"Bearer {access_token}"}
         response = requests.post(f"{uri}/api/v1/create_medicine_asset",headers=headers,json={
-                "medicine_asset": "Aspirin",
+                "medicine_asset": HRANHSAuth.MEDICINE_ASSET,
                 "description": "Pain reliever and anti-inflammatory",
                 "category": "Pain Relief",
                 "lot_number": "AB12345",
@@ -73,6 +74,14 @@ class HRANHSAuth(unittest.TestCase):
         headers = {"Authorization": f"Bearer {access_token}"}
         self.test_create_asset()
         response = requests.get(f"{uri}/api/v1/get_all_medicine_assets",headers=headers)
+        print(response.json())
+    def test_get_medicine_asset(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        self.test_create_asset()
+        response = requests.get(f"{uri}/api/v1/get_medicine_asset",params={"medicine_asset":HRANHSAuth.MEDICINE_ASSET},headers=headers)
         print(response.json())
 
 
