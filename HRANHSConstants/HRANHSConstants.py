@@ -1,4 +1,5 @@
 class HRANHSConstants:
+    DATABASE_NAME = "hranhs.db"
     ADMIN="admin"
     DATEFORMAT='%Y-%m-%d %H:%M:%S'
     USER="user"

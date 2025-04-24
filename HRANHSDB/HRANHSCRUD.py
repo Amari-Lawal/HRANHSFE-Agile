@@ -11,6 +11,7 @@ class HRANHSCRUD:
             fieldstr = ', '.join(fieldlist)
             try:
                 result = self.hranhssql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({fieldstr});",self.hranhssql.fetch)
+                
             except Exception as ex:
                 return {"error":f"{type(ex)},{ex}"}
 
@@ -18,6 +19,7 @@ class HRANHSCRUD:
             fieldstr = f"{fields} {types}"
             try:
                 result = self.hranhssql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({fieldstr});",self.hranhssql.fetch)
+                
             except Exception as ex:
                 return {"error":f"{type(ex)},{ex}"}
 

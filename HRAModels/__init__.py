@@ -1,2 +1,2 @@
 from .User import User,UserLogin
-from .Asset import Asset
+from .MedicineAsset import MedicineAsset

@@ -40,8 +40,30 @@ class HRANHSAuth(unittest.TestCase):
         headers = {"Authorization": f"Bearer {access_token}"}
         response = requests.get(f"{uri}/api/v1/get_user_role",headers=headers)
         print(response.json())
-    def test_create_asset():
-        pass
+    def test_create_MedicineAsset(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.post(f"{uri}/api/v1/create_asset",headers=headers,json={
+                "drug_name": "Aspirin",
+                "description": "Pain reliever and anti-inflammatory",
+                "category": "Pain Relief",
+                "lot_number": "AB12345",
+                "manufacture_date": "2023-05-10",
+                "purchase_cost": 12.99,
+                "vendor": "Pharma Inc.",
+                "storage_location": "Shelf A1",
+                "status": "Active",
+                "expiration_date": "2025-05-10",
+                "last_reviewed": "2024-04-15",
+                "next_review": "2025-04-15",
+                "storage_conditions": "Cool and dry place",
+                "useful_life_years": 2,
+                "current_stock": 100,
+                "image_url": "https://example.com/images/aspirin.jpg"
+                }
+                )
 
 
 

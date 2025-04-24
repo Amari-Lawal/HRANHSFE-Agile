@@ -8,7 +8,7 @@ from HRANHSDB.HRANHSHash import HRANHSHash
 from fastapi.middleware.cors import CORSMiddleware
 from HRANHSJWT import HRANHSJWT
 from HRANHSDB import HRANHSCreateTables 
-from HRAModels import User,UserLogin,Asset
+from HRAModels import User,UserLogin,MedicineAsset
 from HRANHSConstants import HRANHSConstants
 from datetime import datetime
 app = FastAPI()
@@ -79,6 +79,29 @@ async def get_user_role(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
-
+@app.post("/api/v1/create_asset")
+async def create_asset(asset:MedicineAsset,authorization: str = Header(None)):
+    try:
+        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
+        current_user = user_auth_role["email"]
+        role = user_auth_role["role"]
+        if current_user:
+            if role == HRANHSConstants.ADMIN:
+                condition = f"{MedicineAsset.get_field_name("drug_name")} = '{asset.drug_name}'"
+                asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+                if asset_exists:
+                    return {"message": "Medicine Asset already exists"} # , 400
+                elif not asset_exists:
+                    hracrud.post_data(MedicineAsset.fields_to_tuple(),asset.values_to_tuple(),table=MedicineAsset.MEDICINEASSETSTABLENAME)
+                    return {"message":"Medicine Asset was created."}
+            else:
+                return {"error":"Incorrect permissions."}
+           
+            
+        else:
+            return {"error":"User does not exist."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
 if __name__ == "__main__":
     uvicorn.run("main:app",port=8080,log_level="info")

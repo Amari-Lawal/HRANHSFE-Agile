@@ -4,11 +4,11 @@ import sqlite3
 import subprocess
 from urllib.parse import urlparse
 from typing import Any, Callable, Union
-
+from HRANHSConstants import HRANHSConstants
 class HRANHSSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
-        self.connection = sqlite3.connect("HRANHSAsset.db",autocommit=True)
+        self.connection = sqlite3.connect(HRANHSConstants.DATABASE_NAME,autocommit=True)
 
 
     def check_exists(self,result :Any):
