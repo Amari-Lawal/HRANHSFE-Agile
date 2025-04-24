@@ -77,6 +77,7 @@ class HRANHSCRUD:
                     fieldstr = f"{field} = '{value}'"
                     updatelist.append(fieldstr)
             updatestr = ', '.join(updatelist)
+            #print(f"UPDATE {table} SET {updatestr} WHERE {condition};")
             result = self.hranhssql.run_command(f"UPDATE {table} SET {updatestr} WHERE {condition};",self.hranhssql.fetch)
             if len(result) == 0:
                 return True
@@ -88,6 +89,7 @@ class HRANHSCRUD:
             else:
                 value = values[0].replace("'","''",1000000)
                 updatestr = f"{fieldstoupdate[0]} = '{value}'"
+            #print(f"UPDATE {table} SET {updatestr} WHERE {condition};")
             result = self.hranhssql.run_command(f"UPDATE {table} SET {updatestr} WHERE {condition};",self.hranhssql.fetch)
 
 

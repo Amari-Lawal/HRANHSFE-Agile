@@ -3,7 +3,8 @@ from datetime import datetime
 import uuid
 from typing import Optional
 import hashlib
-from typing import ClassVar
+from typing import ClassVar,Literal,Union
+from HRANHSExceptions import FieldNotExistException
 class User(BaseModel):
     USERSTABLENAME: ClassVar[str] = "users"
     user_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -11,13 +12,13 @@ class User(BaseModel):
     last_name: str
     email: str
     password: str
-    role: str
+    role: Literal['admin', 'user']
     department: Optional[str] = None
     phone_number: Optional[str] = None
     status: str
-    last_login: Optional[datetime] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    last_login: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
     USERSDATATYPES: ClassVar[tuple] = (
             "TEXT PRIMARY KEY",      # user_id as UUID (VARCHAR(255) NOT NULL format)
             "VARCHAR(255) NOT NULL",                  # first_name as VARCHAR(255) NOT NULL
@@ -39,7 +40,13 @@ class User(BaseModel):
     
     def values_to_tuple(self) -> tuple:
         return tuple(self.model_dump().values())
-
+    @classmethod
+    def get_field_name(cls,value) -> Union[str,None]:
+        keys = list(cls.model_fields)
+        if value in keys:
+            return value
+        else:
+            raise FieldNotExistException(value)
 
 class UserLogin(BaseModel):
     email:str

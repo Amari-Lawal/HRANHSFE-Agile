@@ -40,6 +40,9 @@ class HRANHSAuth(unittest.TestCase):
         headers = {"Authorization": f"Bearer {access_token}"}
         response = requests.get(f"{uri}/api/v1/get_user_role",headers=headers)
         print(response.json())
+    def test_create_asset():
+        pass
+
 
 
 

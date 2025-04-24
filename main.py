@@ -5,11 +5,12 @@ from fastapi.responses import StreamingResponse,FileResponse,Response
 from typing import Dict,List,Any,Union
 from HRANHSDB.HRANHSCRUD import HRANHSCRUD
 from HRANHSDB.HRANHSHash import HRANHSHash
-
 from fastapi.middleware.cors import CORSMiddleware
 from HRANHSJWT import HRANHSJWT
 from HRANHSDB import HRANHSCreateTables 
-from HRAModels import User,UserLogin
+from HRAModels import User,UserLogin,Asset
+from HRANHSConstants import HRANHSConstants
+from datetime import datetime
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -56,6 +57,9 @@ async def login(user :UserLogin): # ,authorization: str = Header(None)
             if access_token == "Wrong password":
                 return {"message": "The username or password is incorrect."}
             else:
+                last_login = User.get_field_name("last_login")
+                now = datetime.now().strftime(HRANHSConstants.DATEFORMAT)
+                hracrud.update_data((last_login,),(now,),User.USERSTABLENAME,condition=condition)
                 return {"access_token": access_token}
         return {"message": "The username or password is incorrect."}
     except Exception as ex:
@@ -75,5 +79,6 @@ async def get_user_role(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
+
 if __name__ == "__main__":
     uvicorn.run("main:app",port=8080,log_level="info")
