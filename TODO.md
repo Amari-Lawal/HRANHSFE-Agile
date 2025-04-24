@@ -1,7 +1,7 @@
 # TODO 
 1. DB User Auth and role based $
 2. Assets Setup DB $
-3. Improve Unittest Setup 
+3. Improve Unittest Setup $
 4. Create user interface. %
 5. Create validations on UI
 6. Deploy to Google Cloud - See how DB will be deployed.
