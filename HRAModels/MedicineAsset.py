@@ -11,6 +11,7 @@ class MedicineAsset(BaseModel):
     MEDICINEASSETSTABLENAME: ClassVar[str] = "medical_assets"
     medicine_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     medicine_asset: str
+    vendor_id:str 
     description: str
     category: str
     lot_number: str
@@ -30,12 +31,12 @@ class MedicineAsset(BaseModel):
     MEDICINEASSETDATATYPES: ClassVar[tuple] = (
     "TEXT PRIMARY KEY",  # drug_id as UUID (VARCHAR(255) NOT NULL format)
     "VARCHAR(255) NOT NULL",  # medicine_asset
+     "VARCHAR(255) NOT NULL",  # vendor_id
     "VARCHAR(255) NOT NULL",  # description
     "VARCHAR(255) NOT NULL",  # category
     "VARCHAR(255) NOT NULL",  # lot_number
     "DATE NOT NULL",          # manufacture_date
     "REAL NOT NULL",          # purchase_cost
-    "VARCHAR(255) NOT NULL",  # vendor
     "VARCHAR(255) NOT NULL",  # storage_location
     "VARCHAR(255) NOT NULL",  # status
     "DATE NOT NULL",          # expiration_date
@@ -47,15 +48,8 @@ class MedicineAsset(BaseModel):
     "VARCHAR(255)",            # image_url (nullable)
     "TIMESTAMP",    # created_at (TIMESTAMP)
     "TIMESTAMP",    # updated_at (TIMESTAMP)
+    "FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)"
 )
-    @computed_field
-    def get_vendor_name(self) -> str:
-        hracrud = HRANHSCRUD()
-        hracrud.hranhssql.run_command("")
-        #condition = f"{Vendor.get_field_name("vendor_name")} = '{self.vendor_name}'"
-        #result = hracrud.get_data(("vendor_id",),Vendor.VENDORTABLENAME,condition=condition)
-        #next((item for item in result if item["vendor_name"] == MedicineAsset.get_field_name("medicine_asset")), None)
-        #return str(uuid.uuid4())
     
     @classmethod
     def fields_to_tuple(cls) -> tuple:

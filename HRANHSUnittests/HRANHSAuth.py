@@ -9,6 +9,7 @@ class HRANHSAuth(unittest.TestCase):
     EMAIL = "alice.johnson@example.com"
     PASSWORD = "hello" 
     MEDICINE_ASSET="Aspirin"
+    VENDOR_NAME="GSK Pharmaceuticals"
     def signup(self):
         response = requests.post(f"{uri}/api/v1/signup",json={
         "first_name": "Alice",
@@ -35,6 +36,22 @@ class HRANHSAuth(unittest.TestCase):
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
         print(response.json())
         # {"access_token":response.json().get("access_token")} # ,"refresh_token":response.json().get("refresh_token")
+    def test_create_vendor(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.post(f"{uri}/api/v1/create_vendor",headers=headers,json={
+        "vendor_name": HRANHSAuth.VENDOR_NAME,
+        "vendor_address": "123 Industrial Park Road, Springfield, IL 62704",
+        "contact_person": "John Doe",
+        "contact_number": "+1-555-123-4567",
+        "email": "john.doe@abcsupplies.com",
+        "status": "active"
+        }
+                )
+        print(response.json())
+
     def test_get_user_role(self):
         self.signup()
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
@@ -46,10 +63,16 @@ class HRANHSAuth(unittest.TestCase):
         self.test_signup()
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
         access_token = response.json()["access_token"]
+
+        access_token = response.json()["access_token"]
         headers = {"Authorization": f"Bearer {access_token}"}
+        response = requests.get(f"{uri}/api/v1/get_all_vendors",headers=headers)
+        vendors = response.json().get("vendors")
+        vendor_id = vendors[0]["vendor_id"] if vendors else None
         response = requests.post(f"{uri}/api/v1/create_medicine_asset",headers=headers,json={
                 "medicine_asset": HRANHSAuth.MEDICINE_ASSET,
                 "description": "Pain reliever and anti-inflammatory",
+                "vendor_id": vendor_id,
                 "category": "Pain Relief",
                 "lot_number": "AB12345",
                 "manufacture_date": "2023-05-10",
@@ -83,6 +106,28 @@ class HRANHSAuth(unittest.TestCase):
         self.test_create_asset()
         response = requests.get(f"{uri}/api/v1/get_medicine_asset",params={"medicine_asset":HRANHSAuth.MEDICINE_ASSET},headers=headers)
         print(response.json())
+    def test_get_vendor_from_name(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        self.test_create_asset()
+        self.test_create_vendor()
+        response = requests.get(f"{uri}/api/v1/get_vendor",params={"vendor_name":HRANHSAuth.VENDOR_NAME},headers=headers)
+        print(response.json())
+    def test_get_vendor_from_id(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        self.test_create_asset()
+        self.test_create_vendor()
+        response = requests.get(f"{uri}/api/v1/get_medicine_asset",params={"medicine_asset":HRANHSAuth.MEDICINE_ASSET},headers=headers)
+        vendor_id = response.json().get("medicine_assets")[0].get("vendor_id")
+        response = requests.get(f"{uri}/api/v1/get_vendor",params={"vendor_id":vendor_id},headers=headers)
+        print(response.json())
+        
+
 
 
 

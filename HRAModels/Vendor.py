@@ -6,7 +6,7 @@ from typing import ClassVar
 import uuid
 from HRANHSExceptions import FieldNotExistException
 class Vendor(BaseModel):
-    VENDORTABLENAME: ClassVar[str] = "vendor"
+    VENDORTABLENAME: ClassVar[str] = "vendors"
     vendor_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     vendor_name: str 
     vendor_address: str

@@ -35,7 +35,7 @@ class HRANHSCRUD:
             #print(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};")
 
             #values = tuple(map(convert_to_hex,values))
-
+            print(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};")
             result = self.hranhssql.run_command(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};",self.hranhssql.fetch,datatuple=values)
 
     
