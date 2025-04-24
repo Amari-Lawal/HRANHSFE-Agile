@@ -4,7 +4,7 @@ import sqlite3
 import subprocess
 from urllib.parse import urlparse
 from typing import Any, Callable, Union
-from HRANHSConstants import HRANHSConstants
+from api.HRANHSConstants import HRANHSConstants
 class HRANHSSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.

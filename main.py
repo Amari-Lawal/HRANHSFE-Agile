@@ -1,15 +1,12 @@
 import uvicorn
-import hashlib
-from fastapi import FastAPI, Header,Request,File, UploadFile,status,Form
-from fastapi.responses import StreamingResponse,FileResponse,Response
-from typing import Dict,List,Any,Union,Optional
-from HRANHSDB.HRANHSCRUD import HRANHSCRUD
-from HRANHSDB.HRANHSHash import HRANHSHash
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from HRANHSJWT import HRANHSJWT
-from HRANHSDB import HRANHSCreateTables 
-from HRAModels import User,UserLogin,MedicineAsset,Vendor
-from HRANHSConstants import HRANHSConstants
+from api import assets, users, vendors
+
+app = FastAPI()
+
+
 from datetime import datetime
 app = FastAPI()
 app.add_middleware(
@@ -21,187 +18,16 @@ app.add_middleware(
 )
 
 
-hracrud = HRANHSCRUD()
-hranhsjwt = HRANHSJWT(hracrud)
-HRANHSCreateTables.create(hracrud)
+
+
 
 
 @app.get('/')# GET # allow all origins all methods.
 async def index():
     return "Welcome to HRANHS Template. Hello"
-@app.post('/api/v1/signup') # POST
-async def signup(user: User):
-    try:
-        user.password = hashlib.sha256(user.password.encode('utf-8')).hexdigest()
-        condition = f"email = '{user.email}'"
-        email_exists = hracrud.check_exists(("*"),User.USERSTABLENAME,condition=condition)
-        if email_exists:
-            return {"message": "Email already exists"} # , 400
-        elif not email_exists:
-            hracrud.post_data(User.fields_to_tuple(),user.values_to_tuple(),table=User.USERSTABLENAME)
-            access_token = hranhsjwt.secure_encode({"email":user.email,"role":user.role})
-            callback = {"status": "success","access_token":access_token}
+app.include_router(users.router)
+app.include_router(vendors.router)
+app.include_router(assets.router)
 
-            return callback
-    except Exception as ex:
-        error_detected = {"error": "error occured","errortype":type(ex), "error": str(ex)}
-        return error_detected
-@app.post('/api/v1/login') # POST
-async def login(user :UserLogin): # ,authorization: str = Header(None)
-    # Login API
-    try:
-        condition = f"email = '{user.email}'"
-        email_exists = hracrud.check_exists(("*"),User.USERSTABLENAME,condition=condition)
-        if email_exists:
-            access_token = hranhsjwt.provide_access_token(user)
-            if access_token == "Wrong password":
-                return {"message": "The username or password is incorrect."}
-            else:
-                last_login = User.get_field_name("last_login")
-                now = datetime.now().strftime(HRANHSConstants.DATEFORMAT)
-                hracrud.update_data((last_login,),(now,),User.USERSTABLENAME,condition=condition)
-                return {"access_token": access_token}
-        return {"message": "The username or password is incorrect."}
-    except Exception as ex:
-        return {"error": f"{type(ex)} {str(ex)}"}
-
-@app.get('/api/v1/get_user_role') # POST # allow all origins all methods.
-async def get_user_role(authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            return {"email":current_user,"role":role}
-            
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
-@app.post("/api/v1/create_vendor")
-async def create_vendor(vendor:Vendor,authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            condition = f"{Vendor.get_field_name("vendor_name")} = '{vendor.vendor_name}'"
-            vendor_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
-            if vendor_exists:
-                return {"message": "Vendor already exists"} # , 400
-            elif not vendor_exists:
-                hracrud.post_data(Vendor.fields_to_tuple(),vendor.values_to_tuple(),table=Vendor.VENDORTABLENAME)
-                return {"message":"Vendor was created."}
-            
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
-@app.get("/api/v1/get_all_vendors")
-async def get_all_vendors(authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            asset_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME)
-            if asset_exists:
-                results = hracrud.get_data(Vendor.fields_to_tuple(),Vendor.VENDORTABLENAME)
-                return {"vendors":results}
-            else:
-                return {"message":"No vendors found."} 
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
-@app.get("/api/v1/get_vendor")
-async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = None,authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            if vendor_id:   
-                condition = f"{Vendor.get_field_name('vendor_id')} = '{vendor_id}'" 
-            elif vendor_name:
-                condition = f"{Vendor.get_field_name('vendor_name')} = '{vendor_name}'"
-            else:
-                return {"error":"Please provide vendor_id or vendor_name."}
-            vendor_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
-            if vendor_exists:
-                results = hracrud.get_data(Vendor.fields_to_tuple(),Vendor.VENDORTABLENAME,condition=condition)
-                return {"vendors":results}
-            else:
-                return {"message":"No assets found."} 
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}   
-    
-@app.post("/api/v1/create_medicine_asset")
-async def create_medicine_asset(asset:MedicineAsset,authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            if role == HRANHSConstants.ADMIN:
-                condition = f"{MedicineAsset.get_field_name("medicine_asset")} = '{asset.medicine_asset}'"
-                asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-                if asset_exists:
-                    return {"message": "Medicine Asset already exists"} # , 400
-                elif not asset_exists:
-                    hracrud.post_data(MedicineAsset.fields_to_tuple(),asset.values_to_tuple(),table=MedicineAsset.MEDICINEASSETSTABLENAME)
-                    return {"message":"Medicine Asset was created."}
-            else:
-                return {"error":"Incorrect permissions."}
-           
-            
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
-@app.get("/api/v1/get_all_medicine_assets")
-async def get_all_medicine_assets(authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME)
-            if asset_exists:
-                results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME)
-                return {"medicine_assets":results}
-            else:
-                return {"message":"No assets found."} 
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
-@app.get("/api/v1/get_medicine_asset")
-async def get_medicine_asset(medicine_asset:str,authorization: str = Header(None)):
-    try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            condition = f"{MedicineAsset.get_field_name('medicine_asset')} = '{medicine_asset}'"
-            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-            if asset_exists:
-                results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-                return {"medicine_assets":results}
-            else:
-                return {"message":"No assets found."} 
-        else:
-            return {"error":"User does not exist."}
-    except Exception as ex:
-        print(type(ex),ex)
-        return {"error":f"{type(ex)},{ex}"}
 if __name__ == "__main__":
     uvicorn.run("main:app",port=8080,log_level="info")

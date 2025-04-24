@@ -1,5 +1,5 @@
-from HRANHSDB.HRANHSCRUD import HRANHSCRUD
-from HRAModels import User,MedicineAsset,Vendor
+from api.HRANHSDB.HRANHSCRUD import HRANHSCRUD
+from api.HRAModels import User,MedicineAsset,Vendor
 class HRANHSCreateTables:
     @staticmethod
     def create(hracrud :HRANHSCRUD):

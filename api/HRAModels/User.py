@@ -4,7 +4,7 @@ import uuid
 from typing import Optional
 import hashlib
 from typing import ClassVar,Literal,Union
-from HRANHSExceptions import FieldNotExistException
+from api.HRANHSExceptions import FieldNotExistException
 class User(BaseModel):
     USERSTABLENAME: ClassVar[str] = "users"
     user_id: str = Field(default_factory=lambda: str(uuid.uuid4()))

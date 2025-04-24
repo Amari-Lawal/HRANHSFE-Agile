@@ -4,7 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import ClassVar
 import uuid
-from HRANHSExceptions import FieldNotExistException
+from api.HRANHSExceptions import FieldNotExistException
 class Vendor(BaseModel):
     VENDORTABLENAME: ClassVar[str] = "vendors"
     vendor_id: str = Field(default_factory=lambda: str(uuid.uuid4()))

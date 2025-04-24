@@ -1,9 +1,9 @@
 import jwt
 import hashlib
-from HRANHSDB import HRANHSCRUD
-from HRANHSJWT import HRANHSJWT
-from HRAModels import User
-from HRANHSConstants import HRANHSConstants
+from api.HRANHSDB import HRANHSCRUD
+from api.HRANHSJWT import HRANHSJWT
+from api.HRAModels import User
+from api.HRANHSConstants import HRANHSConstants
 class HRANHSJWT:
     def __init__(self,hracrud : HRANHSCRUD) -> None:
         self.hracrud = hracrud

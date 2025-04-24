@@ -1,5 +1,5 @@
 import base64
-from HRANHSDB.HRANHSSQL import HRANHSSQL
+from api.HRANHSDB.HRANHSSQL import HRANHSSQL
 
 class HRANHSCRUD:
     def __init__(self) -> None:
@@ -9,7 +9,7 @@ class HRANHSCRUD:
         if type(fields) == tuple:
             fieldlist = [f"{field} {typestr}"for field,typestr in zip(fields,types)]
             fieldstr = ', '.join(fieldlist)
-            print(f"CREATE TABLE IF NOT EXISTS {table} ({fieldstr});")
+            #print(f"CREATE TABLE IF NOT EXISTS {table} ({fieldstr});")
             try:
                 result = self.hranhssql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({fieldstr});",self.hranhssql.fetch)
                 

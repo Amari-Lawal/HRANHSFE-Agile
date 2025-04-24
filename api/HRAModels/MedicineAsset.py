@@ -4,9 +4,9 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import ClassVar
 import uuid
-from HRANHSExceptions import FieldNotExistException
-from HRANHSDB import HRANHSCRUD
-from HRAModels import Vendor
+from api.HRANHSExceptions import FieldNotExistException
+from api.HRANHSDB import HRANHSCRUD
+from api.HRAModels import Vendor
 class MedicineAsset(BaseModel):
     MEDICINEASSETSTABLENAME: ClassVar[str] = "medical_assets"
     medicine_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
