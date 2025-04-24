@@ -1,6 +1,6 @@
 # TODO 
 1. DB User Auth and role based $
-2. Assets Setup DB
+2. Assets Setup DB $
 3. Improve Unittest Setup
 4. Create user interface.
 5. Create validations on UI
