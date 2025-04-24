@@ -33,6 +33,7 @@ class HRANHSAuth(unittest.TestCase):
         self.test_signup()
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
         print(response.json())
+        # {"access_token":response.json().get("access_token")} # ,"refresh_token":response.json().get("refresh_token")
     def test_get_user_role(self):
         self.signup()
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
@@ -40,13 +41,13 @@ class HRANHSAuth(unittest.TestCase):
         headers = {"Authorization": f"Bearer {access_token}"}
         response = requests.get(f"{uri}/api/v1/get_user_role",headers=headers)
         print(response.json())
-    def test_create_MedicineAsset(self):
+    def test_create_asset(self):
         self.test_signup()
         response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
         access_token = response.json()["access_token"]
         headers = {"Authorization": f"Bearer {access_token}"}
-        response = requests.post(f"{uri}/api/v1/create_asset",headers=headers,json={
-                "drug_name": "Aspirin",
+        response = requests.post(f"{uri}/api/v1/create_medicine_asset",headers=headers,json={
+                "medicine_asset": "Aspirin",
                 "description": "Pain reliever and anti-inflammatory",
                 "category": "Pain Relief",
                 "lot_number": "AB12345",
@@ -64,7 +65,15 @@ class HRANHSAuth(unittest.TestCase):
                 "image_url": "https://example.com/images/aspirin.jpg"
                 }
                 )
-
+        print(response.json())
+    def test_get_all_medicine_assets(self):
+        self.test_signup()
+        response = requests.post(f"{uri}/api/v1/login",json={"email":HRANHSAuth.EMAIL,"password":HRANHSAuth.PASSWORD})
+        access_token = response.json()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        self.test_create_asset()
+        response = requests.get(f"{uri}/api/v1/get_all_medicine_assets",headers=headers)
+        print(response.json())
 
 
 

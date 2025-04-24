@@ -7,8 +7,8 @@ import uuid
 from HRANHSExceptions import FieldNotExistException
 class MedicineAsset(BaseModel):
     MEDICINEASSETSTABLENAME: ClassVar[str] = "medical_assets"
-    drug_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    drug_name: str
+    medicine_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    medicine_asset: str
     description: str
     category: str
     lot_number: str
@@ -28,7 +28,7 @@ class MedicineAsset(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
     MEDICINEASSETDATATYPES: ClassVar[tuple] = (
     "TEXT PRIMARY KEY",  # drug_id as UUID (VARCHAR(255) NOT NULL format)
-    "VARCHAR(255) NOT NULL",  # drug_name
+    "VARCHAR(255) NOT NULL",  # medicine_asset
     "VARCHAR(255) NOT NULL",  # description
     "VARCHAR(255) NOT NULL",  # category
     "VARCHAR(255) NOT NULL",  # lot_number

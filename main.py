@@ -79,15 +79,15 @@ async def get_user_role(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
-@app.post("/api/v1/create_asset")
-async def create_asset(asset:MedicineAsset,authorization: str = Header(None)):
+@app.post("/api/v1/create_medicine_asset")
+async def create_medicine_asset(asset:MedicineAsset,authorization: str = Header(None)):
     try:
         user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
         current_user = user_auth_role["email"]
         role = user_auth_role["role"]
         if current_user:
             if role == HRANHSConstants.ADMIN:
-                condition = f"{MedicineAsset.get_field_name("drug_name")} = '{asset.drug_name}'"
+                condition = f"{MedicineAsset.get_field_name("medicine_asset")} = '{asset.medicine_asset}'"
                 asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
                 if asset_exists:
                     return {"message": "Medicine Asset already exists"} # , 400
@@ -98,6 +98,43 @@ async def create_asset(asset:MedicineAsset,authorization: str = Header(None)):
                 return {"error":"Incorrect permissions."}
            
             
+        else:
+            return {"error":"User does not exist."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
+@app.get("/api/v1/get_all_medicine_assets")
+async def get_all_medicine_assets(authorization: str = Header(None)):
+    try:
+        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
+        current_user = user_auth_role["email"]
+        role = user_auth_role["role"]
+        if current_user:
+            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME)
+            if asset_exists:
+                results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME)
+                return {"medicine_assets":results}
+            else:
+                return {"message":"No assets found."} 
+        else:
+            return {"error":"User does not exist."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
+@app.get("/api/v1/get_medicine_asset")
+async def get_medicine_asset(medicine_asset:str,authorization: str = Header(None)):
+    try:
+        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
+        current_user = user_auth_role["email"]
+        role = user_auth_role["role"]
+        if current_user:
+            condition = f"{MedicineAsset.get_field_name('medicine_asset')} = '{medicine_asset}'"
+            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+            if asset_exists:
+                results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+                return {"medicine_assets":results}
+            else:
+                return {"message":"No assets found."} 
         else:
             return {"error":"User does not exist."}
     except Exception as ex:
