@@ -41,7 +41,7 @@ async def get_all_vendors(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
-@router.get("/get_vendor")
+@router.get("/get_vendor/{vendor_id}")
 async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = None,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
@@ -63,4 +63,23 @@ async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = 
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}   
-    
+@router.delete("/delete_vendor/{vendor_id}")
+async def delete_vendor(vendor_id:Optional[str] = None,authorization: str = Header(None)):
+    try:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            if vendor_id:   
+                condition = f"{Vendor.get_field_name('vendor_id')} = '{vendor_id}'" 
+            else:
+                return {"error":"Please provide vendor_id or vendor."}
+            asset_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
+            if asset_exists:
+                hracrud.delete_data(Vendor.VENDORTABLENAME,condition=condition)
+                return {"message":"Medicine Asset was deleted."}
+            else:
+                return {"error":"No assets found."} 
+        else:
+            return {"error":"User does not exist or is not authorized."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}

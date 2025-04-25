@@ -48,7 +48,7 @@ class MedicineAsset(BaseModel):
     "VARCHAR(255)",            # image_url (nullable)
     "TIMESTAMP",    # created_at (TIMESTAMP)
     "TIMESTAMP",    # updated_at (TIMESTAMP)
-    "FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)"
+    "FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id) ON DELETE CASCADE"
 )
     
     @classmethod

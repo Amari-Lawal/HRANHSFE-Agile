@@ -82,3 +82,23 @@ async def update_medicine_asset(medicine_id:str,asset:HRAUpdateMedicineAsset,aut
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
+@router.delete("/delete_medicine_asset/{medicine_id}")
+async def delete_medicine_asset(medicine_id:Optional[str] = None,authorization: str = Header(None)):
+    try:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            if medicine_id:   
+                condition = f"{MedicineAsset.get_field_name('medicine_id')} = '{medicine_id}'" 
+            else:
+                return {"error":"Please provide medicine_id or medicine_asset."}
+            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+            if asset_exists:
+                hracrud.delete_data(MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+                return {"message":"Medicine Asset was deleted."}
+            else:
+                return {"error":"No assets found."} 
+        else:
+            return {"error":"User does not exist or is not authorized."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}

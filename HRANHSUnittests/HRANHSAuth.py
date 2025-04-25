@@ -138,7 +138,41 @@ class HRANHSAuth(unittest.TestCase):
             #print(response)
         medical_assets = HRANHSAssetsTests.get_medicine_asset(headers,medicine_id=medicine_id)
         #print(medical_assets)
+    def test_delete_medicine_asset(self):
+        HRANHSignupTest.signup(self)
 
+        headers = HRANHSLoginTest.login()
+
+        HRANHSVendorTests.create_vendor(headers)
+
+        vendors = HRANHSVendorTests.get_all_vendors(headers)
+
+        vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
+
+        HRANHSTestCases.POST_ASSET_TEST_CASE["vendor_id"] = vendor_id
+        HRANHSAssetsTests.create_medicine_asset(headers,HRANHSTestCases.POST_ASSET_TEST_CASE)
+        medical_assets = HRANHSAssetsTests.get_medicine_asset(headers)
+    
+        medicine_id = HRANHSAssetsTests.get_first_asset_id(medical_assets)
+        response = HRANHSAssetsTests.delete_medicine_asset(headers,medicine_id)
+        medical_assets = HRANHSAssetsTests.get_medicine_asset(headers)
+        medicine_id = HRANHSAssetsTests.get_first_asset_id(medical_assets)
+        self.assertEqual(medicine_id,None)
+    def test_delete_vendor(self):
+        HRANHSignupTest.signup(self)
+
+        headers = HRANHSLoginTest.login()
+
+        HRANHSVendorTests.create_vendor(headers)
+
+        vendors = HRANHSVendorTests.get_all_vendors(headers)
+
+        vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
+        response = HRANHSVendorTests.delete_vendor(headers,vendor_id)
+        vendors = HRANHSVendorTests.get_all_vendors(headers)
+        
+        vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
+        self.assertEqual(vendor_id,None)
 
 
 
