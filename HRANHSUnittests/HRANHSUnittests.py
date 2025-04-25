@@ -233,16 +233,28 @@ class HRANHSUnittests(unittest.TestCase):
             #print(update_case)
             response = HRANHSAuthTest.update_user(headers,user_data.user_id,update_case)
             #print(response)
-            print(response)
+            #print(response)
         all_user_data = HRANHSAuthTest.get_all_user_data(headers)
-        print(all_user_data)
 
         HRANHSAdminTests.delete_all_data_from_tables(headers)
 
         #print(vendor_id)
     
 
+    def test_delete_user(self):
+        HRANHSAuthTest.signup(self)
 
+        headers = HRANHSAuthTest.login()
+
+
+        users = HRANHSAuthTest.get_all_user_data(headers)
+
+        user_id = HRANHSAuthTest.get_first_user_id(users)
+        response = HRANHSAuthTest.delete_user(headers,user_id)
+        #print(response)
+        users = HRANHSAuthTest.get_all_user_data(headers) # If this is {'error': 'User does not exist or is not authorized.'} then current user was deleted. so correct but if else it would have one less. So this is correct.
+        #print(users)
+        HRANHSAdminTests.delete_all_data_from_tables(headers)
 
 
 
