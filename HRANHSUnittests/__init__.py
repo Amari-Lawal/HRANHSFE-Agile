@@ -4,3 +4,4 @@ from .HRANHSignupTest import HRANHSignupTest
 from .HRANHSVendorTests import HRANHSVendorTests
 from .HRANHSAssetsTests import HRANHSAssetsTests
 from .HRANHSRolesTest import HRANHSRolesTest
+from .HRANHSAdminTests import HRANHSAdminTests

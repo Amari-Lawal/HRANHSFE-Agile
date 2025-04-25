@@ -102,8 +102,9 @@ class HRANHSCRUD:
 
 
     def delete_data(self,table:str,condition:str):
-        field_name = condition.split("=")[0].strip()
         result = self.hranhssql.run_command(f"DELETE FROM {table} WHERE {condition};",self.hranhssql.fetch)
+    def delete_all_data_from_tables(self,table:str):
+        result = self.hranhssql.run_command(f"DELETE FROM {table}",self.hranhssql.fetch)
 
     def check_exists(self,fields:tuple,table:str,condition=None):
         if len(fields) != 1:

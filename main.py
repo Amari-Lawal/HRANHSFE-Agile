@@ -2,7 +2,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api import assets, users, vendors
+from api import assets, users, vendors,admin
 from pages import home,auth
 from fastapi.staticfiles import StaticFiles
 app = FastAPI()
@@ -27,5 +27,6 @@ app.include_router(vendors.router)
 app.include_router(assets.router)
 app.include_router(home.router)  # Include HTML page routes
 app.include_router(auth.router)
+app.include_router(admin.router)
 if __name__ == "__main__":
     uvicorn.run("main:app",port=8080,log_level="info")
