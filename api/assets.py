@@ -4,7 +4,7 @@ from api.db_session import hracrud
 from api.db_session import hranhsjwt
 from fastapi import Header
 from api.HRAModels import MedicineAsset
-from api.HRARequests import HRAUpdateMedicineAsset
+from api.HRARequests import UpdateMedicineAsset
 from api.HRANHSConstants import HRANHSConstants
 from typing import Optional
 router = APIRouter(prefix="/api/v1/assets", tags=["assets"])
@@ -82,7 +82,7 @@ async def get_medicine_assets_by_vendor(vendor_id:str,authorization: str = Heade
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.put("/update_medicine_asset/{medicine_id}")
-async def update_medicine_asset(medicine_id:str,asset:HRAUpdateMedicineAsset,authorization: str = Header(None)):
+async def update_medicine_asset(medicine_id:str,asset:UpdateMedicineAsset,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
         if authenticated:

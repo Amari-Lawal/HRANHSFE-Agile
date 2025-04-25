@@ -32,6 +32,49 @@ class HRANHSTestCases:
                 "current_stock": 100,
                 "image_url": "https://example.com/images/aspirin.jpg"
                 }
+    UPDATE_VENDOR_TEST_CASES=[
+  {
+    "vendor_name": "Tech Supplies Ltd.",
+    "vendor_address": "123 Tech Street, Silicon Valley, CA",
+    "contact_person": "John Doe",
+    "contact_number": "+1-800-555-1234",
+    "email": "johndoe@techsupplies.com",
+    "status": "Active"
+  },
+  {
+    "vendor_name": "Global Electronics",
+    "vendor_address": "456 Global Plaza, New York, NY",
+    "contact_person": "Jane Smith",
+    "contact_number": "+1-212-555-9876",
+    "email": "janesmith@globelec.com",
+    "status": "Inactive"
+  },
+  {
+    "vendor_name": "Green Energy Corp.",
+    "vendor_address": "789 Green Way, Houston, TX",
+    "contact_person": "Mark Johnson",
+    "contact_number": "+1-832-555-4567",
+    "email": "markjohnson@greenenergy.com",
+    "status": "Pending"
+  },
+  {
+    "vendor_name": "Fashion Distributors",
+    "vendor_address": "101 Fashion Avenue, Los Angeles, CA",
+    "contact_person": "Linda Williams",
+    "contact_number": "+1-310-555-2345",
+    "email": "lindawilliams@fashiondistrib.com",
+    "status": "Active"
+  },
+  {
+    "vendor_name": "Alpha Technologies",
+    "vendor_address": "200 Alpha Building, Boston, MA",
+    "contact_person": "David Lee",
+    "contact_number": "+1-617-555-6789",
+    "email": "davidlee@alphatech.com",
+    "status": "Suspended"
+  }
+]
+
     UPDATE_ASSET_TEST_CASES = [
   {
     "description": "Hello World",

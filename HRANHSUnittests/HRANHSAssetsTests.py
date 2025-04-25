@@ -3,7 +3,7 @@ from typing import Optional
 from HRANHSUnittests.HRANHSConstantsTests import HRANHSConstantsTests
 from HRANHSUnittests.HRANHSTestCases import HRANHSTestCases
 from api.HRAModels import MedicineAsset
-from api.HRARequests import HRAUpdateMedicineAsset
+from api.HRARequests import UpdateMedicineAsset
 class HRANHSAssetsTests:
     @staticmethod
     def create_medicine_asset(headers,asset_data:MedicineAsset):
@@ -28,7 +28,7 @@ class HRANHSAssetsTests:
         else:
             return None
     @staticmethod
-    def update_medicine_asset(headers,medicine_id:str,asset_data:HRAUpdateMedicineAsset):
+    def update_medicine_asset(headers,medicine_id:str,asset_data:UpdateMedicineAsset):
         response = requests.put(f"{HRANHSConstantsTests.URI}/api/v1/assets/update_medicine_asset/{medicine_id}",json=asset_data,headers=headers)
         return response.json()
     @staticmethod

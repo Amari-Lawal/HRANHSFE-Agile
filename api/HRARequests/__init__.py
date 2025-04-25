@@ -1,1 +1,2 @@
-from .HRAUpdateMedicineAsset import HRAUpdateMedicineAsset
+from .UpdateMedicineAsset import UpdateMedicineAsset
+from .UpdateVendor import UpdateVendor

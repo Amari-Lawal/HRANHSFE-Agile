@@ -7,7 +7,7 @@ import uuid
 from api.HRANHSExceptions import FieldNotExistException
 from api.HRANHSDB import HRANHSCRUD
 from api.HRAModels import Vendor
-class HRAUpdateMedicineAsset(BaseModel):
+class UpdateMedicineAsset(BaseModel):
     medicine_asset: Optional[str] = None
     vendor_id: Optional[str] = None
     description:Optional[str] = None

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from api.HRAModels import Vendor,MedicineAsset
+from api.HRARequests import UpdateVendor
 from api.db_session import hracrud
 from api.db_session import hranhsjwt
 from fastapi import Header
@@ -63,6 +64,23 @@ async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = 
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}   
+@router.put("/update_vendor/{vendor_id}")
+async def update_vendor(vendor_id:str,vendor:UpdateVendor,authorization: str = Header(None)):
+    try:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            condition = f"{Vendor.get_field_name('vendor_id')} = '{vendor_id}'"
+            vendor_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
+            if vendor_exists:
+                hracrud.update_data(vendor.fields_from_existing_to_tuple(),vendor.values_from_existing_to_tuple(),table=Vendor.VENDORTABLENAME,condition=condition)
+                return {"mesage":"Vendor was updated."}
+            else:
+                return {"error":"No asset found."} 
+        else:
+            return {"error":"User does not exist or is not authorized."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
 @router.delete("/delete_vendor/{vendor_id}")
 async def delete_vendor(vendor_id:Optional[str] = None,authorization: str = Header(None)):
     try:
@@ -76,7 +94,7 @@ async def delete_vendor(vendor_id:Optional[str] = None,authorization: str = Head
             if asset_exists:
                 hracrud.delete_data(Vendor.VENDORTABLENAME,condition=condition)
                 hracrud.delete_data(MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-                return {"message":"Medicine Asset was deleted."}
+                return {"message":"Vendor was deleted."}
             else:
                 return {"error":"No assets found."} 
         else:

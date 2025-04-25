@@ -191,6 +191,23 @@ class HRANHSAuth(unittest.TestCase):
         response = HRANHSVendorTests.delete_vendor(headers,vendor_id)
         medical_assets = HRANHSAssetsTests.get_medicine_asset_by_vendor(headers,vendor_id)
         self.assertEqual(medical_assets,[])
+    def test_update_vendor(self):
+        HRANHSignupTest.signup(self)
+
+        headers = HRANHSLoginTest.login()
+
+        HRANHSVendorTests.create_vendor(headers)
+
+        vendors = HRANHSVendorTests.get_all_vendors(headers)
+
+        vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
+        for update_case in HRANHSTestCases.UPDATE_VENDOR_TEST_CASES:
+            response = HRANHSVendorTests.update_vendor(headers,vendor_id,update_case)
+            #print(response)
+        vendors = HRANHSVendorTests.get_all_vendors(headers)
+        vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
+        print(vendors)
+        #print(vendor_id)
 
 
 
