@@ -3,7 +3,9 @@ import hashlib
 from api.HRANHSDB import HRANHSCRUD
 from api.HRANHSJWT import HRANHSJWT
 from api.HRAModels import User
+from fastapi import Header
 from api.HRANHSConstants import HRANHSConstants
+from api.HRANHSJWT.models.UserAuthRole import UserAuthRole
 class HRANHSJWT:
     def __init__(self,hracrud : HRANHSCRUD) -> None:
         self.hracrud = hracrud
@@ -36,3 +38,39 @@ class HRANHSJWT:
                 return "Wrong password"
         else:
             return "Wrong password"
+    def authenticate_user(self,authorization: str = Header(None)) ->UserAuthRole:
+        token = authorization.replace("Bearer ","")
+        user_auth_role = self.secure_decode(token)
+        return UserAuthRole.model_validate(user_auth_role)
+    def check_user_role(self,authorization: str = Header(None)) -> bool:
+        user_auth_role = self.authenticate_user(authorization)
+        user_role = user_auth_role.role
+        current_user = user_auth_role.email
+        user_role_exists = self.hracrud.check_exists(("*"),User.USERSTABLENAME,condition=f"{User.get_field_name('email')} = '{current_user}' AND {User.get_field_name('role')} = '{user_role}'")
+        if user_role_exists:
+            return True
+        else:
+            return False
+    def check_user_exists(self,authorization: str = Header(None)) -> bool:
+        user_auth_role = self.authenticate_user(authorization)
+        current_user = user_auth_role.email
+        user_exists = self.hracrud.check_exists(("*"),User.USERSTABLENAME,condition=f"{User.get_field_name('email')} = '{current_user}'")
+        if user_exists:
+            return True
+        else:
+            return False
+    def restrict_access(self,authorization: str = Header(None)) -> bool:
+        user_auth_role = self.authenticate_user(authorization)
+        current_user = user_auth_role.email
+        user_role = user_auth_role.role
+        user_role_exists = self.hracrud.check_exists(("*"),User.USERSTABLENAME,condition=f"{User.get_field_name('email')} = '{current_user}' AND {User.get_field_name('role')} = '{user_role}'")
+        if user_role_exists:
+            result = self.hracrud.get_data(User.fields_to_tuple(),User.USERSTABLENAME,condition=f"{User.get_field_name('email')} = '{current_user}'")
+            user_data = self.hracrud.get_first_data_point(result)
+            user_model = User(**user_data)
+            if user_model.role == HRANHSConstants.ADMIN:
+                return True
+            else:
+                return False
+        else:
+            return False

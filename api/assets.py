@@ -12,34 +12,25 @@ router = APIRouter(prefix="/api/v1/assets", tags=["assets"])
 @router.post("/create_medicine_asset")
 async def create_medicine_asset(asset:MedicineAsset,authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            if role == HRANHSConstants.ADMIN:
-                condition = f"{MedicineAsset.get_field_name("medicine_asset")} = '{asset.medicine_asset}'"
-                asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-                if asset_exists:
-                    return {"message": "Medicine Asset already exists"} # , 400
-                elif not asset_exists:
-                    hracrud.post_data(MedicineAsset.fields_to_tuple(),asset.values_to_tuple(),table=MedicineAsset.MEDICINEASSETSTABLENAME)
-                    return {"message":"Medicine Asset was created."}
-            else:
-                return {"error":"Incorrect permissions."}
-           
-            
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            condition = f"{MedicineAsset.get_field_name("medicine_asset")} = '{asset.medicine_asset}'"
+            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+            if asset_exists:
+                return {"message": "Medicine Asset already exists"} # , 400
+            elif not asset_exists:
+                hracrud.post_data(MedicineAsset.fields_to_tuple(),asset.values_to_tuple(),table=MedicineAsset.MEDICINEASSETSTABLENAME)
+                return {"message":"Medicine Asset was created."}
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.get("/get_all_medicine_assets")
 async def get_all_medicine_assets(authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME)
             if asset_exists:
                 results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME)
@@ -47,17 +38,15 @@ async def get_all_medicine_assets(authorization: str = Header(None)):
             else:
                 return {"error":"No assets found."} 
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.get("/get_medicine_asset")
 async def get_medicine_asset(medicine_id:Optional[str] = None,medicine_asset:Optional[str] = None,authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             if medicine_id:   
                 condition = f"{MedicineAsset.get_field_name('medicine_id')} = '{medicine_id}'" 
             elif medicine_asset:
@@ -71,17 +60,15 @@ async def get_medicine_asset(medicine_id:Optional[str] = None,medicine_asset:Opt
             else:
                 return {"error":"No assets found."} 
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.put("/update_medicine_asset/{medicine_id}")
 async def update_medicine_asset(medicine_id:str,asset:HRAUpdateMedicineAsset,authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             print(medicine_id)
             condition = f"{MedicineAsset.get_field_name('medicine_id')} = '{medicine_id}'"
             asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
@@ -91,7 +78,7 @@ async def update_medicine_asset(medicine_id:str,asset:HRAUpdateMedicineAsset,aut
             else:
                 return {"error":"No asset found."} 
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}

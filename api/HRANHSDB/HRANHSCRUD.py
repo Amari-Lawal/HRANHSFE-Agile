@@ -1,4 +1,5 @@
 import base64
+from typing import List,Union
 from api.HRANHSDB.HRANHSSQL import HRANHSSQL
 from datetime import datetime
 class HRANHSCRUD:
@@ -35,7 +36,7 @@ class HRANHSCRUD:
             #print(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};")
 
             #values = tuple(map(convert_to_hex,values))
-            print(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};")
+            #print(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};")
             result = self.hranhssql.run_command(f"INSERT INTO {table} {fieldstr} VALUES {valuestr};",self.hranhssql.fetch,datatuple=values)
 
     
@@ -103,7 +104,7 @@ class HRANHSCRUD:
     def delete_data(self,table:str,condition:str):
         field_name = condition.split("=")[0].strip()
         result = self.hranhssql.run_command(f"DELETE FROM {table} WHERE {condition};",self.hranhssql.fetch)
-        
+
     def check_exists(self,fields:tuple,table:str,condition=None):
         if len(fields) != 1:
             fieldlist = [f"{field}" for field in fields]
@@ -137,8 +138,10 @@ class HRANHSCRUD:
         elif type(result[0]) == str:
             final_result = dict(zip(fields,result))
             return final_result 
-        
+    
     def json_to_tuple(self,json:dict):
         keys = tuple(json.keys())
         values = tuple(json.values())
         return keys,values
+    def get_first_data_point(self,result:List) -> Union[None, str]:
+        return next(iter(result), None)

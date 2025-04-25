@@ -10,11 +10,8 @@ router = APIRouter(prefix="/api/v1/vendors", tags=["vendors"])
 @router.post("/create_vendor")
 async def create_vendor(vendor:Vendor,authorization: str = Header(None)):
     try:
-
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             condition = f"{Vendor.get_field_name("vendor_name")} = '{vendor.vendor_name}'"
             vendor_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
             if vendor_exists:
@@ -24,17 +21,15 @@ async def create_vendor(vendor:Vendor,authorization: str = Header(None)):
                 return {"message":"Vendor was created."}
             
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.get("/get_all_vendors")
 async def get_all_vendors(authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             asset_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME)
             if asset_exists:
                 results = hracrud.get_data(Vendor.fields_to_tuple(),Vendor.VENDORTABLENAME)
@@ -42,17 +37,15 @@ async def get_all_vendors(authorization: str = Header(None)):
             else:
                 return {"message":"No vendors found."} 
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 @router.get("/get_vendor")
 async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = None,authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
             if vendor_id:   
                 condition = f"{Vendor.get_field_name('vendor_id')} = '{vendor_id}'" 
             elif vendor_name:
@@ -66,7 +59,7 @@ async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = 
             else:
                 return {"message":"No assets found."} 
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}   

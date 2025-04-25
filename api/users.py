@@ -47,14 +47,15 @@ async def login(user :UserLogin): # ,authorization: str = Header(None)
 @router.get('/get_user_role') # POST # allow all origins all methods.
 async def get_user_role(authorization: str = Header(None)):
     try:
-        user_auth_role = hranhsjwt.secure_decode(authorization.replace("Bearer ",""))
-        current_user = user_auth_role["email"]
-        role = user_auth_role["role"]
-        if current_user:
-            return {"email":current_user,"role":role}
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            user_auth_role = hranhsjwt.authenticate_user(authorization)
+            current_user = user_auth_role.email
+            user_role = user_auth_role.role
+            return {"email":current_user,"role":user_role}
             
         else:
-            return {"error":"User does not exist."}
+            return {"error":"User does not exist or is not authorized."}
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
