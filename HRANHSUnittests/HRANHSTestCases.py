@@ -1,5 +1,18 @@
 from HRANHSUnittests.HRANHSConstantsTests import HRANHSConstantsTests
 class HRANHSTestCases:
+    USER_SIGNUP_ADMIN_TEST_CASE = {
+            "first_name": "Alice",
+            "last_name": "Johnson",
+            "email": HRANHSConstantsTests.EMAIL,
+            "password": HRANHSConstantsTests.PASSWORD,
+            "role": "admin",
+            "department": "Engineering",
+            "phone_number": "+1234567890",
+            "status": "active",
+            "last_login": "2025-04-23T12:34:56",
+            "created_at": "2024-12-01T09:15:30",
+            "updated_at": "2025-04-22T17:45:10"
+            }
     POST_ASSET_TEST_CASE = {
                 "medicine_asset": HRANHSConstantsTests.MEDICINE_ASSET,
                 "description": "Pain reliever and anti-inflammatory",

@@ -6,6 +6,9 @@
 5. Create validations on UI
 6. Deploy to Google Cloud - See how DB will be deployed.
 
+ Update Vendor 
+ Then update and delete users
+ delete for roles
 ## DB Schema Below
 
 1. Admin and Users Table 1 
