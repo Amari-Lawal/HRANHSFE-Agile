@@ -37,6 +37,6 @@ class HRANHSVendorTests:
         return response.json()
     @staticmethod
     def delete_vendor(headers,vendor_id):
-        response = requests.delete(f"{HRANHSConstantsTests.URI}/api/v1/vendors/delete_vendor/{vendor_id}",headers=headers)
+        response = requests.delete(f"{HRANHSConstantsTests.URI}/api/v1/admin/delete_vendor/{vendor_id}",headers=headers)
         return response.json()
     
