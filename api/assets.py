@@ -65,7 +65,6 @@ async def get_medicine_asset(medicine_id:Optional[str] = None,medicine_asset:Opt
             else:
                 return {"error":"Please provide medicine_id or medicine_asset."}
             asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
-            print(asset_exists)
             if asset_exists:
                 results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
                 return {"medicine_assets":results}
