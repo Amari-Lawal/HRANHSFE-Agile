@@ -29,7 +29,7 @@ class HRANHSVendorTests:
         return response.json()
     @staticmethod
     def get_vendor_from_id(headers,vendor_id):
-        response = requests.get(f"{HRANHSConstantsTests.URI}/api/v1/vendors/get_vendor/{vendor_id}",headers=headers)
+        response = requests.get(f"{HRANHSConstantsTests.URI}/api/v1/vendors/get_vendor",params={"vendor_id":vendor_id},headers=headers)
         return response.json()
     @staticmethod
     def delete_vendor(headers,vendor_id):

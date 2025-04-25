@@ -64,6 +64,23 @@ async def get_medicine_asset(medicine_id:Optional[str] = None,medicine_asset:Opt
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
+@router.get("/get_medicine_assets_by_vendor/{vendor_id}")
+async def get_medicine_assets_by_vendor(vendor_id:str,authorization: str = Header(None)):
+    try:
+        authenticated = hranhsjwt.check_user_role(authorization)
+        if authenticated:
+            condition = f"{MedicineAsset.get_field_name('vendor_id')} = '{vendor_id}'"
+            asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+            if asset_exists:
+                results = hracrud.get_data(MedicineAsset.fields_to_tuple(),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
+                return {"medicine_assets":results}
+            else:
+                return {"error":"No assets found."} 
+        else:
+            return {"error":"User does not exist or is not authorized."}
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
 @router.put("/update_medicine_asset/{medicine_id}")
 async def update_medicine_asset(medicine_id:str,asset:HRAUpdateMedicineAsset,authorization: str = Header(None)):
     try:

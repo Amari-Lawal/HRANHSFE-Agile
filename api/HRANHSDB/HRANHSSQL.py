@@ -9,6 +9,7 @@ class HRANHSSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
         self.connection = sqlite3.connect(HRANHSConstants.DATABASE_NAME,autocommit=True)
+        self.connection.cursor().execute("PRAGMA foreign_keys = ON")
 
 
     def check_exists(self,result :Any):
@@ -57,6 +58,7 @@ class HRANHSSQL:
                 cursor.execute(sqlcommand,datatuple)
             else:
                 cursor.execute(sqlcommand)
+           
 
             result = cursor.fetchall()
                 

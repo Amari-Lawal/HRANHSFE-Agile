@@ -35,4 +35,8 @@ class HRANHSAssetsTests:
     def delete_medicine_asset(headers,medicine_id:str):
         response = requests.delete(f"{HRANHSConstantsTests.URI}/api/v1/assets/delete_medicine_asset/{medicine_id}",headers=headers)
         return response.json()
+    @staticmethod
+    def get_medicine_asset_by_vendor(headers,vendor_id:str):
+        response = requests.get(f"{HRANHSConstantsTests.URI}/api/v1/assets/get_medicine_assets_by_vendor/{vendor_id}",headers=headers)
+        return response.json().get("medicine_assets",[])
     

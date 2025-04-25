@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from api.HRAModels import Vendor
+from api.HRAModels import Vendor,MedicineAsset
 from api.db_session import hracrud
 from api.db_session import hranhsjwt
 from fastapi import Header
@@ -41,7 +41,7 @@ async def get_all_vendors(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
-@router.get("/get_vendor/{vendor_id}")
+@router.get("/get_vendor")
 async def get_vendor(vendor_id:Optional[str] = None,vendor_name:Optional[str] = None,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
@@ -75,6 +75,7 @@ async def delete_vendor(vendor_id:Optional[str] = None,authorization: str = Head
             asset_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
             if asset_exists:
                 hracrud.delete_data(Vendor.VENDORTABLENAME,condition=condition)
+                hracrud.delete_data(MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
                 return {"message":"Medicine Asset was deleted."}
             else:
                 return {"error":"No assets found."} 
