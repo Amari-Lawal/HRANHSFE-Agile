@@ -21,13 +21,13 @@ resource "google_project_service" "run_api" {
 }
 
 resource "google_cloud_run_service" "run_service" {
-  name = "hranhsaifastapi"
+  name = "hranhsmedicineassets"
   location = "us-central1"
 
   template {
     spec {
       containers {
-        image = "palondomus/hranhsaifastapi:7"
+        image = "palondomus/hranhsmedicineassets:1"
       }
     }
   }

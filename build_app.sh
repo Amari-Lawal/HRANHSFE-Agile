@@ -1,5 +1,5 @@
 #!/bin/bash
-image="hranhsaifastapi"
+image="hranhsmedicineassets"
 
 function getVersions() {
     IN=$(cat main.tf | grep palondomus/$image)
@@ -32,8 +32,7 @@ terraform apply -auto-approve
 # Push Github
 git add .
 git commit -m "$1"
-git push origin -u main:main
-
+GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa" git push --set-upstream origin main
 # Test application
 docker run -it -p 8080:8080 palondomus/$image:$newv
 
