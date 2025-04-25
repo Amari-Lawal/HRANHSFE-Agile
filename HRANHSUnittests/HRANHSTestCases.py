@@ -1,0 +1,56 @@
+from HRANHSUnittests.HRANHSConstantsTests import HRANHSConstantsTests
+class HRANHSTestCases:
+    POST_ASSET_TEST_CASE = {
+                "medicine_asset": HRANHSConstantsTests.MEDICINE_ASSET,
+                "description": "Pain reliever and anti-inflammatory",
+                "vendor_id": "{vendor_id}",
+                "category": "Pain Relief",
+                "lot_number": "AB12345",
+                "manufacture_date": "2023-05-10",
+                "purchase_cost": 12.99,
+                "vendor": "Pharma Inc.",
+                "storage_location": "Shelf A1",
+                "status": "Active",
+                "expiration_date": "2025-05-10",
+                "last_reviewed": "2024-04-15",
+                "next_review": "2025-04-15",
+                "storage_conditions": "Cool and dry place",
+                "useful_life_years": 2,
+                "current_stock": 100,
+                "image_url": "https://example.com/images/aspirin.jpg"
+                }
+    UPDATE_ASSET_TEST_CASES = [
+  {
+    "description": "Hello World",
+    "category": "Analgesic",
+    "lot_number": "LTPM500-2024A",
+    "manufacture_date": "2024-01-15",
+    "purchase_cost": 0.10,
+    "storage_location": "Shelf A1",
+    "status": "active",
+    "expiration_date": "2026-01-15",
+    "last_reviewed": "2025-04-01",
+    "next_review": "2025-10-01",
+    "storage_conditions": "Store at room temperature",
+    "useful_life_years": 2,
+    "current_stock": 5000,
+    "image_url": "https://example.com/images/paracetamol.png"
+  },
+  {
+    "medicine_asset": "Amoxicillin 250mg",
+    "description": "Broad-spectrum antibiotic",
+  },
+  {
+    "lot_number": "IBU200-C34",
+    "manufacture_date": "2024-03-05",
+    "purchase_cost": 0.15,
+    "status": "active",
+    "expiration_date": "2026-03-05",
+    "last_reviewed": "2025-04-10",
+    "next_review": "2025-10-10",
+    "storage_conditions": "Store in a cool, dry place",
+    "useful_life_years": 2,
+    "current_stock": 3000,
+    "image_url": "https://example.com/images/ibuprofen.png"
+  }
+]

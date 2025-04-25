@@ -1,0 +1,1 @@
+from .HRAUpdateMedicineAsset import HRAUpdateMedicineAsset

@@ -1,6 +1,6 @@
 import base64
 from api.HRANHSDB.HRANHSSQL import HRANHSSQL
-
+from datetime import datetime
 class HRANHSCRUD:
     def __init__(self) -> None:
         self.hranhssql = HRANHSSQL()
@@ -71,8 +71,12 @@ class HRANHSCRUD:
         if len(fieldstoupdate) > 1:
             updatelist = []
             for field,value in zip(fieldstoupdate,values):
-                if type(value) != str:
-                    fieldstr = f"{field} = {value}"
+                if not isinstance(value,str):
+                    if isinstance(value,datetime):
+                        value = str(value)
+                        fieldstr = f"{field} = '{value}'"
+                    else:
+                        fieldstr = f"{field} = {value}"
                     updatelist.append(fieldstr)
 
                 else:
@@ -92,7 +96,7 @@ class HRANHSCRUD:
             else:
                 value = values[0].replace("'","''",1000000)
                 updatestr = f"{fieldstoupdate[0]} = '{value}'"
-            #print(f"UPDATE {table} SET {updatestr} WHERE {condition};")
+            # print(f"UPDATE {table} SET {updatestr} WHERE {condition};")
             result = self.hranhssql.run_command(f"UPDATE {table} SET {updatestr} WHERE {condition};",self.hranhssql.fetch)
 
 
