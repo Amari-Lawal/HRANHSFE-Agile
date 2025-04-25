@@ -5,7 +5,7 @@
 4. Create user interface. %
 5. Create validations on UI
 6. Deploy to Google Cloud - See how DB will be deployed.
-
+7. Maybe Change email, role and password
  Update Vendor 
  Then update and delete users
  delete for roles

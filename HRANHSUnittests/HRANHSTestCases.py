@@ -32,6 +32,36 @@ class HRANHSTestCases:
                 "current_stock": 100,
                 "image_url": "https://example.com/images/aspirin.jpg"
                 }
+    UPDTAE_USER_TEST_CASE = [
+    {
+        "first_name": "John",
+        "last_name": "Doe",
+        "department": "Engineering",
+        "phone_number": "+1234567890",
+        "status": "active"
+    },
+    {
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "department": "Marketing",
+        "phone_number": "+0987654321",
+        "status": "inactive"
+    },
+    {
+        "first_name": "Alice",
+        "last_name": "Johnson",
+        "department": "Human Resources",
+        "phone_number": "+1122334455",
+        "status": "active"
+    },
+    {
+        "first_name": "Bob",
+        "last_name": "Lee",
+        "department": "Sales",
+        "phone_number": "+1222333444",
+        "status": "active"
+    }
+    ]
     UPDATE_VENDOR_TEST_CASES=[
   {
     "vendor_name": "Tech Supplies Ltd.",

@@ -1,6 +1,6 @@
 if [[ $1 == "" ]]
 then
-  python -m unittest HRANHSUnittests.HRANHSAuth.HRANHSAuth
+  python -m unittest HRANHSUnittests.HRANHSUnittests.HRANHSUnittests
 else
-  python -m unittest HRANHSUnittests.HRANHSAuth.HRANHSAuth.$1
+  python -m unittest HRANHSUnittests.HRANHSUnittests.HRANHSUnittests.$1
 fi

@@ -3,47 +3,46 @@ import requests
 import unittest
 import sys
 
-from HRANHSUnittests.HRANHSLoginTest import HRANHSLoginTest
-from HRANHSUnittests.HRANHSignupTest import HRANHSignupTest
+from HRANHSUnittests.HRANHSAuthTest import HRANHSAuthTest
 from HRANHSUnittests.HRANHSAssetsTests import HRANHSAssetsTests
 from HRANHSUnittests.HRANHSConstantsTests import HRANHSConstantsTests
 from HRANHSUnittests.HRANHSVendorTests import HRANHSVendorTests
-from HRANHSUnittests.HRANHSRolesTest import HRANHSRolesTest
+from HRANHSUnittests.HRANHSAuthTest import HRANHSAuthTest
 from HRANHSUnittests.HRANHSTestCases import HRANHSTestCases
 from HRANHSUnittests.HRANHSAdminTests import HRANHSAdminTests
-class HRANHSAuth(unittest.TestCase):
+class HRANHSUnittests(unittest.TestCase):
 
 
     def test_signup(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
     def test_login(self):
 
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
         HRANHSAdminTests.delete_all_data_from_tables(headers)
 
     def test_create_vendor(self):
 
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
 
 
-    def test_get_user_role(self):
-        HRANHSignupTest.signup(self)
-        headers = HRANHSLoginTest.login()
-        HRANHSRolesTest.get_user_role(headers)
+    def test_get_user_data(self):
+        HRANHSAuthTest.signup(self)
+        headers = HRANHSAuthTest.login()
+        user_data = HRANHSAuthTest.get_user_data(headers)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
 
     def test_create_asset(self):
 
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -55,9 +54,9 @@ class HRANHSAuth(unittest.TestCase):
         HRANHSAdminTests.delete_all_data_from_tables(headers)
 
     def test_get_all_medicine_assets(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -73,9 +72,9 @@ class HRANHSAuth(unittest.TestCase):
 
     def test_get_medicine_asset(self):
 
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -91,9 +90,9 @@ class HRANHSAuth(unittest.TestCase):
 
     def test_get_vendor_from_name(self):
 
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -111,9 +110,9 @@ class HRANHSAuth(unittest.TestCase):
 
     def test_get_vendor_from_id(self):
         
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
         
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -127,9 +126,9 @@ class HRANHSAuth(unittest.TestCase):
         response = HRANHSVendorTests.get_vendor_from_id(headers,vendor_id)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
     def test_update_medicine_asset(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -149,9 +148,9 @@ class HRANHSAuth(unittest.TestCase):
         #print(medical_assets)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
     def test_delete_medicine_asset(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -170,9 +169,9 @@ class HRANHSAuth(unittest.TestCase):
         self.assertEqual(medicine_id,None)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
     def test_delete_vendor(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -186,9 +185,9 @@ class HRANHSAuth(unittest.TestCase):
         self.assertEqual(vendor_id,None)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
     def test_delete_vendor_check_assets(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -205,9 +204,9 @@ class HRANHSAuth(unittest.TestCase):
         self.assertEqual(medical_assets,[])
         HRANHSAdminTests.delete_all_data_from_tables(headers)
     def test_update_vendor(self):
-        HRANHSignupTest.signup(self)
+        HRANHSAuthTest.signup(self)
 
-        headers = HRANHSLoginTest.login()
+        headers = HRANHSAuthTest.login()
 
         HRANHSVendorTests.create_vendor(headers)
 
@@ -220,6 +219,26 @@ class HRANHSAuth(unittest.TestCase):
         vendors = HRANHSVendorTests.get_all_vendors(headers)
         vendor_id = HRANHSVendorTests.get_first_vendor_id(vendors)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
+        #print(vendor_id)
+    def test_update_user_info(self):
+        HRANHSAuthTest.signup(self)
+
+        headers = HRANHSAuthTest.login()
+
+        HRANHSVendorTests.create_vendor(headers)
+
+        user_data = HRANHSAuthTest.get_user_data(headers)
+        #print(user_data)
+        for update_case in HRANHSTestCases.UPDTAE_USER_TEST_CASE:
+            #print(update_case)
+            response = HRANHSAuthTest.update_user(headers,user_data.user_id,update_case)
+            #print(response)
+            print(response)
+        all_user_data = HRANHSAuthTest.get_all_user_data(headers)
+        print(all_user_data)
+
+        HRANHSAdminTests.delete_all_data_from_tables(headers)
+
         #print(vendor_id)
     
 

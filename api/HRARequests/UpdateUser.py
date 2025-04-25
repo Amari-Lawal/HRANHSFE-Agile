@@ -1,17 +1,15 @@
 from pydantic import BaseModel, Field
-from typing import Union,Optional
+from typing import Union,Literal,Optional
 from datetime import datetime
 from api.HRANHSExceptions import FieldNotExistException
 
-class UpdateVendor(BaseModel):
-    vendor_name: Optional[str] = None 
-    vendor_address: Optional[str] = None
-    contact_person: Optional[str] = None
-    contact_number: Optional[str] = None
-    email: Optional[str] = None
+class UpdateUser(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    department: Optional[str] = None
+    phone_number: Optional[str] = None
     status: Optional[str] = None
     updated_at: datetime = Field(default_factory=datetime.now)
-  
     @classmethod
     def fields_to_tuple(cls) -> tuple:
         return tuple(cls.model_fields)
