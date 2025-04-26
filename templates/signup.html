@@ -64,11 +64,19 @@
               },
               body: JSON.stringify(formData),
             });
-      
+            console.log('Response:', response); // Log the response for debugging
+            console.log('Response status:', response.status); // Log the response status for debugging
             if (response.ok) {
                 const data = await response.json();
                 if (data.error){
                     alert('Error: ' + data.error);  
+                }
+                else if (data.access_token) {
+                  alert('Signup successful!'); // You can customize this message
+                  localStorage.setItem('access_token', data.access_token);  // Store the token securely
+                  window.location.href = '/assets'; // Redirect to another page or perform other actions
+                } else if (data.message) {
+                  alert(data.message);
                 }
                 else {
                   alert(data.message);

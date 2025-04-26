@@ -13,7 +13,7 @@ class Vendor(BaseModel):
     contact_person: str
     contact_number: str
     email: str
-    status: str
+    status: str = Field(default="active")
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
     VENDORDATATYPES: ClassVar[tuple] = (

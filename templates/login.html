@@ -50,6 +50,8 @@
             console.log('Login success:', data);
             if (data.access_token) {
               alert('Login successful!'); // You can customize this message
+                localStorage.setItem('access_token', data.access_token);  // Store the token securely
+                window.location.href = '/assets';
               // Redirect to another page or perform other actions
               // window.location.href = '/dashboard'; // Example redirect
             } 

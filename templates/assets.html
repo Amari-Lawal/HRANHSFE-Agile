@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets List</title>
+</head>
+<body>
+    <div style="display: flex;gap: 20px;">
+    <div style="display:flex;flex-direction: column;">
+    <h1>List of Vendors</h1>
+    <script>
+        async function submitVendorForm(event) {
+            event.preventDefault();  // Prevent form submission
+            console.log(event.target)
+
+            const formData = new FormData(event.target);  // Gather form data
+
+            // Get the Bearer token from localStorage
+            const accessToken = localStorage.getItem('access_token');
+            if (!accessToken) {
+                alert("No access token found. Please log in.");
+                return;
+            }
+            console.log('Form Data:', formData); // Log the form data for debugging
+            const response = await fetch("/api/v1/vendors/create_vendor", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: formData,
+            });
+            console.log(await response.json());
+            if (response.ok) {
+                // Reload the vendors table without refreshing the entire page
+                const data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                else if (data.message) {
+                    alert(data.message);
+                }
+                const responsevendor = await fetch("/api/v1/vendors/get_all_vendors", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                },
+            });
+            const updatedVendors = await responsevendor.json();
+                updateVendorsTable(updatedVendors.vendors);
+            } else {
+                alert("Error creating vendor.");
+            }
+        }
+
+        function updateVendorsTable(vendors) {
+            const tableBody = document.getElementById('vendors-table').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';  // Clear existing rows
+
+            vendors.forEach(vendor => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${vendor.vendor_id}</td>
+                    <td>${vendor.vendor_name}</td>
+                    <td>${vendor.vendor_address}</td>
+                    <td>${vendor.contact_person}</td>
+                    <td>${vendor.contact_number}</td>
+                    <td>${vendor.email}</td>
+                    <td>${vendor.status}</td>
+                    <td>${vendor.created_at}</td>
+                    <td>${vendor.updated_at}</td>
+                `;
+            });
+        }
+    </script>
+
+    {% if vendors %}
+        <table >
+            <thead>
+                <tr>
+                    <th>Vendor ID</th>
+                    <th>Vendor Name</th>
+                    <th>Vendor Address</th>
+                    <th>Contact Person</th>
+                    <th>Contact Number</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vendor in vendors %}
+                <tr>
+                    <td>{{ vendor.vendor_id }}</td>
+                    <td>{{ vendor.vendor_name }}</td>
+                    <td>{{ vendor.vendor_address }}</td>
+                    <td>{{ vendor.contact_person }}</td>
+                    <td>{{ vendor.contact_number }}</td>
+                    <td>{{ vendor.email }}</td>
+                    <td>{{ vendor.status }}</td>
+                    <td>{{ vendor.created_at }}</td>
+                    <td>{{ vendor.updated_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No vendors available.</p>
+    {% endif %}
+
+    <h2>Create New Vendor</h2>
+    <form onsubmit="submitVendorForm(event)">
+        <label for="vendor_name">Vendor Name:</label>
+        <input type="text" id="vendor_name" name="vendor_name" required><br><br>
+        
+        <label for="vendor_address">Vendor Address:</label>
+        <input type="text" id="vendor_address" name="vendor_address" required><br><br>
+        
+        <label for="contact_person">Contact Person:</label>
+        <input type="text" id="contact_person" name="contact_person" required><br><br>
+        
+        <label for="contact_number">Contact Number:</label>
+        <input type="text" id="contact_number" name="contact_number" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" required><br><br>
+    
+        <button type="submit">Create Vendor</button>
+    </form>
+    
+
+
+    </div>
+    <div style="display:flex;flex-direction: column;">
+    <h1>List of Assets</h1>
+
+    {% if assets %}
+        <table >
+            <thead>
+                <tr>
+                    <th>Medicine Asset</th>
+                    <th>Vendor ID</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Lot Number</th>
+                    <th>Manufacture Date</th>
+                    <th>Purchase Cost</th>
+                    <th>Status</th>
+                    <th>Expiration Date</th>
+                    <th>Storage Conditions</th>
+                    <th>Useful Life (Years)</th>
+                    <th>Current Stock</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                <tr>
+                    <td>{{ asset.medicine_asset }}</td>
+                    <!--<td>{{ asset.vendor_id }}</td> -->
+                    <td>{{ asset.description }}</td>
+                    <td>{{ asset.category }}</td>
+                    <td>{{ asset.lot_number }}</td>
+                    <td>{{ asset.manufacture_date }}</td>
+                    <td>${{ asset.purchase_cost }}</td>
+                    <td>{{ asset.status }}</td>
+                    <td>{{ asset.expiration_date }}</td>
+                    <td>{{ asset.storage_conditions }}</td>
+                    <td>{{ asset.useful_life_years }}</td>
+                    <td>{{ asset.current_stock }}</td>
+                    <td>
+                        {% if asset.image_url %}
+                            <img src="{{ asset.image_url }}" alt="Asset Image" width="100" />
+                        {% else %}
+                            No image
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No assets available.</p>
+    {% endif %}
+
+    <h2>Create New Asset</h2>
+    <form action="/assets" method="post">
+        <label for="medicine_asset">Medicine Asset:</label>
+        <input type="text" id="medicine_asset" name="medicine_asset" required><br><br>
+        
+        <label for="vendor_id">Vendor ID:</label>
+        <input type="text" id="vendor_id" name="vendor_id" required><br><br>
+        
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required><br><br>
+        
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required><br><br>
+        
+        <label for="lot_number">Lot Number:</label>
+        <input type="text" id="lot_number" name="lot_number" required><br><br>
+        
+        <label for="manufacture_date">Manufacture Date:</label>
+        <input type="date" id="manufacture_date" name="manufacture_date" required><br><br>
+        
+        <label for="purchase_cost">Purchase Cost:</label>
+        <input type="number" id="purchase_cost" name="purchase_cost" required><br><br>
+        
+        <label for="storage_location">Storage Location:</label>
+        <input type="text" id="storage_location" name="storage_location" required><br><br>
+        
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" required><br><br>
+        
+        <label for="expiration_date">Expiration Date:</label>
+        <input type="date" id="expiration_date" name="expiration_date" required><br><br>
+        
+        <label for="storage_conditions">Storage Conditions:</label>
+        <input type="text" id="storage_conditions" name="storage_conditions" required><br><br>
+        
+        <label for="useful_life_years">Useful Life (Years):</label>
+        <input type="number" id="useful_life_years" name="useful_life_years" required><br><br>
+        
+        <label for="current_stock">Current Stock:</label>
+        <input type="number" id="current_stock" name="current_stock" required><br><br>
+        
+        <label for="image_url">Image URL (Optional):</label>
+        <input type="url" id="image_url" name="image_url"><br><br>
+        
+        <button type="submit">Create Asset</button>
+    </form>
+</div>
+</div>
+</body>
+</html>
