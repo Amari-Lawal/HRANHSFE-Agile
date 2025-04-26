@@ -1,5 +1,5 @@
 class HRANHSConstants:
-    PUBLIC_DATABASE_URI = "sqlitecloud://cvtlepfjnz.g5.sqlite.cloud:8860/chinook.sqlite?apikey=4tLkpi1KPUDxpQoUvvSMfxF4CzlJiRWvR8Z2kEa6oak"
+    PUBLIC_DATABASE_URI = "sqlitecloud://ckb83aujhz.g6.sqlite.cloud:8860/chinook.sqlite?apikey=zsa8X8S1IIAsWCZexNbo78vcgpB5bWz85MXA5aRSszQ"
     DATABASE_NAME = "hranhs.db"
     ADMIN="admin"
     DATEFORMAT='%Y-%m-%d %H:%M:%S'
