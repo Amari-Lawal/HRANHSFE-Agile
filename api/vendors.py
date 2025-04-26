@@ -13,7 +13,7 @@ async def create_vendor(vendor:Vendor,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
         if authenticated:
-            condition = f"{Vendor.get_field_name("vendor_name")} = '{vendor.vendor_name}'"
+            condition = f"{Vendor.get_field_name('vendor_name')} = '{vendor.vendor_name}'"
             vendor_exists = hracrud.check_exists(("*"),Vendor.VENDORTABLENAME,condition=condition)
             if vendor_exists:
                 return {"message": "Vendor already exists"} # , 400

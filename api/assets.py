@@ -14,7 +14,7 @@ async def create_medicine_asset(asset:MedicineAsset,authorization: str = Header(
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
         if authenticated:
-            condition = f"{MedicineAsset.get_field_name("medicine_asset")} = '{asset.medicine_asset}'"
+            condition = f"{MedicineAsset.get_field_name('medicine_asset')} = '{asset.medicine_asset}'"
             asset_exists = hracrud.check_exists(("*"),MedicineAsset.MEDICINEASSETSTABLENAME,condition=condition)
             if asset_exists:
                 return {"message": "Medicine Asset already exists"} # , 400
