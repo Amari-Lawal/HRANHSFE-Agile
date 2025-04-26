@@ -8,7 +8,7 @@ from api.HRANHSConstants import HRANHSConstants
 class HRANHSSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
-        self.connection = sqlite3.connect(HRANHSConstants.DATABASE_NAME,autocommit=True)
+        self.connection = sqlite3.connect(HRANHSConstants.PUBLIC_DATABASE_URI,autocommit=True)
         self.connection.cursor().execute("PRAGMA foreign_keys = ON")
 
 

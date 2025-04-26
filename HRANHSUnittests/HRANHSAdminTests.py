@@ -7,5 +7,5 @@ from api.HRARequests import UpdateMedicineAsset
 class HRANHSAdminTests:
     @staticmethod
     def delete_all_data_from_tables(headers):
-        response = requests.delete(f"{HRANHSConstantsTests.URI}/api/v1/admin/delete_all_data_from_tables",headers=headers)
+        response = requests.delete(f"{HRANHSConstantsTests.PUBLIC_URI}/api/v1/admin/delete_all_data_from_tables",headers=headers)
         return response.json()
