@@ -2,10 +2,10 @@
 1. DB User Auth and role based $
 2. Assets Setup DB $
 3. Improve Unittest Setup $
-4. Deploy to Google Cloud - See how DB will be deployed. 1. Sort out depenndecnies etc
+4. Deploy to Google Cloud - See how DB will be deployed. 1. Sort out depenndecnies etc $
 5. Create user interface. %
-6. Create validations on UI
-7. Maybe Change email, role and password
+6. Create validations on UI %
+7. Maybe Change email, role and password %
 
 ## DB Schema Below
 
