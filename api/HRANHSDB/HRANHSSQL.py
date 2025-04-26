@@ -5,12 +5,11 @@ import subprocess
 from urllib.parse import urlparse
 from typing import Any, Callable, Union
 from api.HRANHSConstants import HRANHSConstants
-import sqlitecloud
 class HRANHSSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
-        self.connection = sqlitecloud.connect(HRANHSConstants.PUBLIC_DATABASE_URI) # sqlite3 ,autocommit=True
-        self.connection.execute("PRAGMA foreign_keys = ON")
+        self.connection = sqlite3.connect(HRANHSConstants.DATABASE_NAME,autocommit=True)
+        self.connection.cursor().execute("PRAGMA foreign_keys = ON")
 
 
     def check_exists(self,result :Any):
@@ -53,12 +52,12 @@ class HRANHSSQL:
                with open(filename) as f:
                    sqlcommand = f.read()
             
-
+            cursor = self.connection.cursor()
             #print(datatuple)
             if datatuple:
-                cursor = self.connection.execute(sqlcommand,datatuple)
+                cursor.execute(sqlcommand,datatuple)
             else:
-                cursor = self.connection.execute(sqlcommand)
+                cursor.execute(sqlcommand)
            
 
             result = cursor.fetchall()
