@@ -1,1 +1,2 @@
 GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa" git push --set-upstream origin main
+#GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 git push --set-upstream origin main"

@@ -10,6 +10,7 @@ from HRANHSUnittests.HRANHSVendorTests import HRANHSVendorTests
 from HRANHSUnittests.HRANHSAuthTest import HRANHSAuthTest
 from HRANHSUnittests.HRANHSTestCases import HRANHSTestCases
 from HRANHSUnittests.HRANHSAdminTests import HRANHSAdminTests
+from HRANHSUnittests.HRANHSFrontendTests import HRANHSFrontendTests
 class HRANHSUnittests(unittest.TestCase):
 
 
@@ -255,7 +256,14 @@ class HRANHSUnittests(unittest.TestCase):
         users = HRANHSAuthTest.get_all_user_data(headers) # If this is {'error': 'User does not exist or is not authorized.'} then current user was deleted. so correct but if else it would have one less. So this is correct.
         #print(users)
         HRANHSAdminTests.delete_all_data_from_tables(headers)
+    def test_assets_frontend_jwt_auth(self):
+        HRANHSAuthTest.signup(self)
 
+        headers = HRANHSAuthTest.login()
+
+        response = HRANHSFrontendTests.test_assets_jwt_auth(headers)
+        #print(response)
+        HRANHSAdminTests.delete_all_data_from_tables(headers)
 
 
 if __name__ == "__main__":

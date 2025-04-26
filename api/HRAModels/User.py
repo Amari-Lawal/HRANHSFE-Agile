@@ -15,7 +15,7 @@ class User(BaseModel):
     role: Literal['admin', 'user']
     department: Optional[str] = None
     phone_number: Optional[str] = None
-    status: str
+    status: str = "active"
     last_login: datetime = Field(default_factory=datetime.now)
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)

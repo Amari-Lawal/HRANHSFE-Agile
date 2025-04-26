@@ -11,7 +11,78 @@
     <h1>Welcome to the Signup Page</h1>
     <p>This is the main page of the site.</p>
     <p>Feel free to customize this page.</p>
+    <form id="signupForm">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required><br><br>
+      
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required><br><br>
+      
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+      
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+      
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select><br><br>
+      
+        <label for="department">Department (optional):</label>
+        <input type="text" id="department" name="department"><br><br>
+      
+        <label for="phone_number">Phone Number (optional):</label>
+        <input type="tel" id="phone_number" name="phone_number"><br><br>
+      
+        <button type="submit">Submit</button>
+      </form>
+      
+      <script>
+        const form = document.getElementById('signupForm');
+      
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault(); // Prevent the default form submit
+      
+          const formData = {
+            first_name: form.first_name.value,
+            last_name: form.last_name.value,
+            email: form.email.value,
+            password: form.password.value,
+            role: form.role.value,
+            department: form.department.value || null,
+            phone_number: form.phone_number.value || null,
+          };
+      
+          try {
+            console.log('Form Data:', formData); // Log the form data for debugging
+            const response = await fetch('/api/v1/users/signup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+            });
+      
+            if (response.ok) {
+                const data = await response.json();
+                if (data.error){
+                    alert('Error: ' + data.error);  
+                }
+                else {
+                  alert(data.message);
+                }
+            } else {
+              const errorData = await response.json();
+              console.error('Error response:', errorData); // Log the error response for debugging
+              alert('Error: ' + errorData.detail);
+            }
+          } catch (error) {
+            alert('Network error: ' + error.message);
+          }
+        });
+      </script>
 
-    <script src="/static/script.js"></script>
 </body>
 </html>

@@ -11,7 +11,70 @@
     <h1>Welcome to the Login Page</h1>
     <p>This is the main page of the site.</p>
     <p>Feel free to customize this page.</p>
+    <h2>Login</h2>
 
-    <script src="/static/script.js"></script>
+    <form id="loginForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required><br><br>
+    
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br><br>
+    
+      <button type="submit">Login</button>
+    </form>
+    
+    <script>
+      const loginForm = document.getElementById('loginForm');
+    
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Stop normal form submission
+    
+        const loginData = {
+          email: loginForm.email.value,
+          password: loginForm.password.value,
+        };
+    
+        try {
+          const response = await fetch('/api/v1/users/login', { // Adjust route if needed
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginData),
+          });
+    
+          console.log(response); // You can inspect the response
+    
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Login success:', data);
+            if (data.access_token) {
+              alert('Login successful!'); // You can customize this message
+              // Redirect to another page or perform other actions
+              // window.location.href = '/dashboard'; // Example redirect
+            } 
+            else if(data.message) {
+              alert(data.message);
+
+            }
+            else {
+              alert('Login failed: No access token received');
+            }
+    
+            // Example: If your server returns a token, you could store it
+            // localStorage.setItem('access_token', data.access_token);
+    
+          } else {
+            const errorData = await response.json();
+            console.log('Login error:', errorData);
+            alert('Login failed: ' + errorData.detail);
+          }
+        } catch (error) {
+          console.error('Network error:', error);
+          alert('Network error: ' + error.message);
+        }
+      });
+    </script>
+    
 </body>
 </html>
