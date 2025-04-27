@@ -130,6 +130,7 @@
 <body>
     <div class="container">
         <h1>HRANHS Medicine Asset Management</h1>
+        
         <div class="section">
             <h1 id="vendors-title">List of Vendors</h1>
 
@@ -145,6 +146,7 @@
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Updated At</th>
+                        <th>Actions</th> <!-- Add a column for actions -->
                     </tr>
                 </thead>
                 <tbody>
@@ -160,11 +162,14 @@
                         <td>{{ vendor.status }}</td>
                         <td>{{ vendor.created_at }}</td>
                         <td>{{ vendor.updated_at }}</td>
+                        <td>
+                            <button class="update-vendor" data-id="{{ vendor.vendor_id }}">Update</button> <!-- Update button -->
+                        </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="9">No vendors available.</td>
+                        <td colspan="10">No vendors available.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -213,6 +218,7 @@
                         <th>Useful Life (Years)</th>
                         <th>Current Stock</th>
                         <th>Image</th>
+                        <th>Actions</th> <!-- Add a column for actions -->
                     </tr>
                 </thead>
                 <tbody>
@@ -238,11 +244,14 @@
                                 No image
                             {% endif %}
                         </td>
+                        <td>
+                            <button class="update-asset" data-id="{{ asset.medicine_asset }}">Update</button> <!-- Update button -->
+                        </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="13">No assets available.</td>
+                        <td colspan="14">No assets available.</td>
                     </tr>
                     {% endif %}
                 </tbody>

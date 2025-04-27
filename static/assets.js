@@ -1,5 +1,37 @@
 const assetsForm = document.getElementById('assetsForm');
 
+document.addEventListener("DOMContentLoaded", function() {
+    // Asset update
+    const assetButtons = document.querySelectorAll('.update-asset');
+    assetButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            const assetId = event.target.dataset.id;
+            const assetRow = event.target.closest('tr');
+            const medicineAsset = assetRow.querySelector('td:nth-child(1)').textContent;
+            const vendorId = assetRow.querySelector('td:nth-child(2)').textContent;
+            const description = assetRow.querySelector('td:nth-child(3)').textContent;
+            const category = assetRow.querySelector('td:nth-child(4)').textContent;
+            const lotNumber = assetRow.querySelector('td:nth-child(5)').textContent;
+            const manufactureDate = assetRow.querySelector('td:nth-child(6)').textContent;
+            const purchaseCost = assetRow.querySelector('td:nth-child(7)').textContent;
+            const status = assetRow.querySelector('td:nth-child(8)').textContent;
+
+            const formData = {
+                "medicine_asset": medicineAsset,
+                "vendor_id": vendorId,
+                "description": description,
+                "category": category,
+                "lot_number": lotNumber,
+                "manufacture_date": manufactureDate,
+                "purchase_cost": purchaseCost,
+                "status": status
+            };
+            console.log('Form Data:', formData);
+            // Populate the form fields or send an update request
+        });
+    });
+})
+
 assetsForm.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent the page from refreshing
     const form = e.target

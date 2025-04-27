@@ -1,5 +1,33 @@
 const vendorForm = document.getElementById('vendorForm');
+document.addEventListener("DOMContentLoaded", function() {
+                // Vendor update
+                const vendorButtons = document.querySelectorAll('.update-vendor');
+                vendorButtons.forEach(button => {
+                    button.addEventListener('click', function(event) {
+                        const vendorId = event.target.dataset.id;
+                        const vendorRow = event.target.closest('tr');
+                        const vendorName = vendorRow.querySelector('td:nth-child(2)').textContent;
+                        const vendorAddress = vendorRow.querySelector('td:nth-child(3)').textContent;
+                        const contactPerson = vendorRow.querySelector('td:nth-child(4)').textContent;
+                        const contactNumber = vendorRow.querySelector('td:nth-child(5)').textContent;
+                        const email = vendorRow.querySelector('td:nth-child(6)').textContent;
+                        const status = vendorRow.querySelector('td:nth-child(7)').textContent;
+    
+                        const formData = {
+                            "vendor_name": vendorName,
+                            "vendor_address": vendorAddress,
+                            "contact_person": contactPerson,
+                            "contact_number": contactNumber,
+                            "email": email,
+                            "status": status
+                        };
+                        console.log('Form Data:', formData);
+                        // Populate the form fields or send an update request
+                    });
+                });
+})
 
+     
 vendorForm.addEventListener('submit', async (e) => {
   e.preventDefault(); // Prevent the page from refreshing
   const form = e.target
