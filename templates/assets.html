@@ -9,75 +9,9 @@
     <div style="display: flex;gap: 20px;">
     <div style="display:flex;flex-direction: column;">
     <h1>List of Vendors</h1>
-    <script>
-        async function submitVendorForm(event) {
-            event.preventDefault();  // Prevent form submission
-            console.log(event.target)
 
-            const formData = new FormData(event.target);  // Gather form data
-
-            // Get the Bearer token from localStorage
-            const accessToken = localStorage.getItem('access_token');
-            if (!accessToken) {
-                alert("No access token found. Please log in.");
-                return;
-            }
-            console.log('Form Data:', formData); // Log the form data for debugging
-            const response = await fetch("/api/v1/vendors/create_vendor", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: formData,
-            });
-            console.log(await response.json());
-            if (response.ok) {
-                // Reload the vendors table without refreshing the entire page
-                const data = await response.json();
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-                else if (data.message) {
-                    alert(data.message);
-                }
-                const responsevendor = await fetch("/api/v1/vendors/get_all_vendors", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                },
-            });
-            const updatedVendors = await responsevendor.json();
-                updateVendorsTable(updatedVendors.vendors);
-            } else {
-                alert("Error creating vendor.");
-            }
-        }
-
-        function updateVendorsTable(vendors) {
-            const tableBody = document.getElementById('vendors-table').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';  // Clear existing rows
-
-            vendors.forEach(vendor => {
-                const row = tableBody.insertRow();
-                row.innerHTML = `
-                    <td>${vendor.vendor_id}</td>
-                    <td>${vendor.vendor_name}</td>
-                    <td>${vendor.vendor_address}</td>
-                    <td>${vendor.contact_person}</td>
-                    <td>${vendor.contact_number}</td>
-                    <td>${vendor.email}</td>
-                    <td>${vendor.status}</td>
-                    <td>${vendor.created_at}</td>
-                    <td>${vendor.updated_at}</td>
-                `;
-            });
-        }
-    </script>
-
-    {% if vendors %}
-        <table >
+    <table id="vendors-table" >
+    
             <thead>
                 <tr>
                     <th>Vendor ID</th>
@@ -92,9 +26,10 @@
                 </tr>
             </thead>
             <tbody>
+                {% if vendors %}
                 {% for vendor in vendors %}
                 <tr>
-                    <td>{{ vendor.vendor_id }}</td>
+                    <td class="vendor_id">{{ vendor.vendor_id }}</td>
                     <td>{{ vendor.vendor_name }}</td>
                     <td>{{ vendor.vendor_address }}</td>
                     <td>{{ vendor.contact_person }}</td>
@@ -105,14 +40,20 @@
                     <td>{{ vendor.updated_at }}</td>
                 </tr>
                 {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="9">No vendors available.</td>
+                </tr>
+                {% endif %}
             </tbody>
-        </table>
-    {% else %}
-        <p>No vendors available.</p>
-    {% endif %}
+        
+   
+
+   
+    </table>
 
     <h2>Create New Vendor</h2>
-    <form onsubmit="submitVendorForm(event)">
+    <form id="vendorForm" >
         <label for="vendor_name">Vendor Name:</label>
         <input type="text" id="vendor_name" name="vendor_name" required><br><br>
         
@@ -140,57 +81,61 @@
     <div style="display:flex;flex-direction: column;">
     <h1>List of Assets</h1>
 
-    {% if assets %}
-        <table >
-            <thead>
-                <tr>
-                    <th>Medicine Asset</th>
-                    <th>Vendor ID</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Lot Number</th>
-                    <th>Manufacture Date</th>
-                    <th>Purchase Cost</th>
-                    <th>Status</th>
-                    <th>Expiration Date</th>
-                    <th>Storage Conditions</th>
-                    <th>Useful Life (Years)</th>
-                    <th>Current Stock</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for asset in assets %}
-                <tr>
-                    <td>{{ asset.medicine_asset }}</td>
-                    <!--<td>{{ asset.vendor_id }}</td> -->
-                    <td>{{ asset.description }}</td>
-                    <td>{{ asset.category }}</td>
-                    <td>{{ asset.lot_number }}</td>
-                    <td>{{ asset.manufacture_date }}</td>
-                    <td>${{ asset.purchase_cost }}</td>
-                    <td>{{ asset.status }}</td>
-                    <td>{{ asset.expiration_date }}</td>
-                    <td>{{ asset.storage_conditions }}</td>
-                    <td>{{ asset.useful_life_years }}</td>
-                    <td>{{ asset.current_stock }}</td>
-                    <td>
-                        {% if asset.image_url %}
-                            <img src="{{ asset.image_url }}" alt="Asset Image" width="100" />
-                        {% else %}
-                            No image
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No assets available.</p>
-    {% endif %}
+
+    <table id="assets-table" >
+        <thead>
+            <tr>
+                <th>Medicine Asset</th>
+                <th>Vendor ID</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Lot Number</th>
+                <th>Manufacture Date</th>
+                <th>Purchase Cost</th>
+                <th>Status</th>
+                <th>Expiration Date</th>
+                <th>Storage Conditions</th>
+                <th>Useful Life (Years)</th>
+                <th>Current Stock</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if assets %}
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.medicine_asset }}</td>
+                <td>{{ asset.vendor_id }}</td> 
+                <td>{{ asset.description }}</td>
+                <td>{{ asset.category }}</td>
+                <td>{{ asset.lot_number }}</td>
+                <td>{{ asset.manufacture_date }}</td>
+                <td>${{ asset.purchase_cost }}</td>
+                <td>{{ asset.status }}</td>
+                <td>{{ asset.expiration_date }}</td>
+                <td>{{ asset.storage_conditions }}</td>
+                <td>{{ asset.useful_life_years }}</td>
+                <td>{{ asset.current_stock }}</td>
+                <td>
+                    {% if asset.image_url %}
+                        <img src="{{ asset.image_url }}" alt="Asset Image" width="100" />
+                    {% else %}
+                        No image
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="13">No assets available.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
 
     <h2>Create New Asset</h2>
-    <form action="/assets" method="post">
+    <form id="assetsForm" >
         <label for="medicine_asset">Medicine Asset:</label>
         <input type="text" id="medicine_asset" name="medicine_asset" required><br><br>
         
@@ -237,5 +182,8 @@
     </form>
 </div>
 </div>
+<script src="/static/vendor.js"></script>
+<script src="/static/assets.js"></script>
 </body>
+
 </html>

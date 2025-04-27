@@ -1,0 +1,79 @@
+const vendorForm = document.getElementById('vendorForm');
+
+vendorForm.addEventListener('submit', async (e) => {
+  e.preventDefault(); // Prevent the page from refreshing
+  const form = e.target
+    const formData = {
+        vendor_name: form.vendor_name.value,
+        vendor_address: form.vendor_address.value,
+        contact_person: form.contact_person.value,
+        contact_number: form.contact_number.value,
+        email: form.email.value,
+        status: form.status.value
+    };
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+        alert("No access token found. Please log in.");
+        return;
+    }
+    const response = await fetch("/api/v1/vendors/create_vendor", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    });
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+        // Reload the vendors table without refreshing the entire page
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+        else if (data.message) {
+            alert(data.message);
+        }
+        const responsevendor = await fetch("/api/v1/vendors/get_all_vendors", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        },
+    });
+    const updatedVendors = await responsevendor.json();
+    console.log(updatedVendors);    
+    updateVendorsTable(updatedVendors.vendors);
+    } else {
+        alert("Error creating vendor.");
+    
+    } 
+        
+
+  
+  // You can now send vendorData in a fetch request if you want
+  // Example: fetch('/api/vendors', { method: 'POST', body: JSON.stringify(vendorData) })
+
+});
+
+function updateVendorsTable(vendors) {
+    const tableBody = document.getElementById('vendors-table').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';  // Clear existing rows
+
+    vendors.forEach(vendor => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+            <td>${vendor.vendor_id}</td>
+            <td>${vendor.vendor_name}</td>
+            <td>${vendor.vendor_address}</td>
+            <td>${vendor.contact_person}</td>
+            <td>${vendor.contact_number}</td>
+            <td>${vendor.email}</td>
+            <td>${vendor.status}</td>
+            <td>${vendor.created_at}</td>
+            <td>${vendor.updated_at}</td>
+        `;
+    });
+}
