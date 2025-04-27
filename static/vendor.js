@@ -46,6 +46,7 @@ vendorForm.addEventListener('submit', async (e) => {
     const updatedVendors = await responsevendor.json();
     console.log(updatedVendors);    
     updateVendorsTable(updatedVendors.vendors);
+    scrollToVendorsId("vendors-title");
     } else {
         alert("Error creating vendor.");
     
@@ -76,4 +77,11 @@ function updateVendorsTable(vendors) {
             <td>${vendor.updated_at}</td>
         `;
     });
+}
+function scrollToVendorsId(elementId) {
+    // Get the vendors table element
+    const vendorsTable = document.getElementById(elementId);
+
+    // Scroll to the vendors table
+    vendorsTable.scrollIntoView({ behavior: "smooth", block: "start" });
 }

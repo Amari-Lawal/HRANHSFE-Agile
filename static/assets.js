@@ -1,16 +1,17 @@
 const assetsForm = document.getElementById('assetsForm');
 
 assetsForm.addEventListener('submit', async (e) => {
-  e.preventDefault(); // Prevent the page from refreshing
-  const form = e.target
-  const vendor_ids = document.getElementsByClassName('vendor_id');
-  //console.log(vendor_ids,Array.from(vendor_ids));
+    e.preventDefault(); // Prevent the page from refreshing
+    const form = e.target
+    const vendor_ids = document.getElementsByClassName('vendor_id');
+    //console.log(vendor_ids,Array.from(vendor_ids));
     const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === form.vendor_id.value);
     if (!vendorIdExists) {
         alert("The vendor ID must be in the list.");
+        scrollToVendorsId("vendors-title");
         return;
     }
-    
+
     const formData = {
         medicine_asset: form.medicine_asset.value,
         vendor_id: form.vendor_id.value,
@@ -45,32 +46,34 @@ assetsForm.addEventListener('submit', async (e) => {
 
     if (response.ok) {
         // Reload the assets table without refreshing the entire page
-        
+
         if (data.error) {
             alert(asset.error);
             return;
         }
         else if (data.message) {
             alert(data.message);
+
         }
         const responseasset = await fetch("/api/v1/assets/get_all_medicine_assets", {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        },
-    });
-    const updatedassets = await responseasset.json();
-    //console.log(updatedassets);    
-    updateassetsTable(updatedassets.medicine_assets);
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            },
+        });
+        const updatedassets = await responseasset.json();
+        //console.log(updatedassets);    
+        updateassetsTable(updatedassets.medicine_assets);
+        scrollToVendorsId(`assets-table`);
     } else {
         alert("Error creating asset.");
-    
-    } 
-        
 
-  
-  // You can now send assetData in a fetch request if you want
-  // Example: fetch('/api/assets', { method: 'POST', body: JSON.stringify(assetData) })
+    }
+
+
+
+    // You can now send assetData in a fetch request if you want
+    // Example: fetch('/api/assets', { method: 'POST', body: JSON.stringify(assetData) })
 
 });
 
@@ -94,7 +97,14 @@ function updateassetsTable(assets) {
     <td>${asset.storage_conditions}</td>
     <td>${asset.useful_life_years}</td>
     <td>${asset.current_stock}</td>
-    <td>${asset.image_url}</td>
+    <td> <img src="${asset.image_url}" alt="Asset Image" /></td>
 `;;
     });
+}
+function scrollToVendorsId(elementId) {
+    // Get the vendors table element
+    const vendorsTable = document.getElementById(elementId);
+
+    // Scroll to the vendors table
+    vendorsTable.scrollIntoView({ behavior: "smooth", block: "start" });
 }

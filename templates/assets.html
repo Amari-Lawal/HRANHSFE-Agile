@@ -4,186 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets List</title>
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Container for both the vendor and asset tables */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        /* Vendor and Asset sections */
+        .section {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #4CAF50;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Form styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="number"],
+        input[type="url"] {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+        }
+
+        input[type="submit"],
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover,
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f4f7fc;
+            font-weight: bold;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Image styles in table */
+        img {
+            width: 100px;
+            height: auto;
+            display: block;
+        }
+
+        /* Responsive table */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            table, form {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div style="display: flex;gap: 20px;">
-    <div style="display:flex;flex-direction: column;">
-    <h1>List of Vendors</h1>
+    <div class="container">
+        <h1>HRANHS Medicine Asset Management</h1>
+        <div class="section">
+            <h1 id="vendors-title">List of Vendors</h1>
 
-    <table id="vendors-table" >
-    
-            <thead>
-                <tr>
-                    <th>Vendor ID</th>
-                    <th>Vendor Name</th>
-                    <th>Vendor Address</th>
-                    <th>Contact Person</th>
-                    <th>Contact Number</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if vendors %}
-                {% for vendor in vendors %}
-                <tr>
-                    <td class="vendor_id">{{ vendor.vendor_id }}</td>
-                    <td>{{ vendor.vendor_name }}</td>
-                    <td>{{ vendor.vendor_address }}</td>
-                    <td>{{ vendor.contact_person }}</td>
-                    <td>{{ vendor.contact_number }}</td>
-                    <td>{{ vendor.email }}</td>
-                    <td>{{ vendor.status }}</td>
-                    <td>{{ vendor.created_at }}</td>
-                    <td>{{ vendor.updated_at }}</td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                    <td colspan="9">No vendors available.</td>
-                </tr>
-                {% endif %}
-            </tbody>
-        
-   
-
-   
-    </table>
-
-    <h2>Create New Vendor</h2>
-    <form id="vendorForm" >
-        <label for="vendor_name">Vendor Name:</label>
-        <input type="text" id="vendor_name" name="vendor_name" required><br><br>
-        
-        <label for="vendor_address">Vendor Address:</label>
-        <input type="text" id="vendor_address" name="vendor_address" required><br><br>
-        
-        <label for="contact_person">Contact Person:</label>
-        <input type="text" id="contact_person" name="contact_person" required><br><br>
-        
-        <label for="contact_number">Contact Number:</label>
-        <input type="text" id="contact_number" name="contact_number" required><br><br>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        
-        <label for="status">Status:</label>
-        <input type="text" id="status" name="status" required><br><br>
-    
-        <button type="submit">Create Vendor</button>
-    </form>
-    
-
-
-    </div>
-    <div style="display:flex;flex-direction: column;">
-    <h1>List of Assets</h1>
-
-
-    <table id="assets-table" >
-        <thead>
-            <tr>
-                <th>Medicine Asset</th>
-                <th>Vendor ID</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Lot Number</th>
-                <th>Manufacture Date</th>
-                <th>Purchase Cost</th>
-                <th>Status</th>
-                <th>Expiration Date</th>
-                <th>Storage Conditions</th>
-                <th>Useful Life (Years)</th>
-                <th>Current Stock</th>
-                <th>Image</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if assets %}
-            {% for asset in assets %}
-            <tr>
-                <td>{{ asset.medicine_asset }}</td>
-                <td>{{ asset.vendor_id }}</td> 
-                <td>{{ asset.description }}</td>
-                <td>{{ asset.category }}</td>
-                <td>{{ asset.lot_number }}</td>
-                <td>{{ asset.manufacture_date }}</td>
-                <td>${{ asset.purchase_cost }}</td>
-                <td>{{ asset.status }}</td>
-                <td>{{ asset.expiration_date }}</td>
-                <td>{{ asset.storage_conditions }}</td>
-                <td>{{ asset.useful_life_years }}</td>
-                <td>{{ asset.current_stock }}</td>
-                <td>
-                    {% if asset.image_url %}
-                        <img src="{{ asset.image_url }}" alt="Asset Image" width="100" />
+            <table id="vendors-table">
+                <thead>
+                    <tr>
+                        <th>Vendor ID</th>
+                        <th>Vendor Name</th>
+                        <th>Vendor Address</th>
+                        <th>Contact Person</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if vendors %}
+                    {% for vendor in vendors %}
+                    <tr>
+                        <td class="vendor_id">{{ vendor.vendor_id }}</td>
+                        <td>{{ vendor.vendor_name }}</td>
+                        <td>{{ vendor.vendor_address }}</td>
+                        <td>{{ vendor.contact_person }}</td>
+                        <td>{{ vendor.contact_number }}</td>
+                        <td>{{ vendor.email }}</td>
+                        <td>{{ vendor.status }}</td>
+                        <td>{{ vendor.created_at }}</td>
+                        <td>{{ vendor.updated_at }}</td>
+                    </tr>
+                    {% endfor %}
                     {% else %}
-                        No image
+                    <tr>
+                        <td colspan="9">No vendors available.</td>
+                    </tr>
                     {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="13">No assets available.</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
 
+            <h2>Create New Vendor</h2>
+            <form id="vendorForm">
+                <label for="vendor_name">Vendor Name:</label>
+                <input type="text" id="vendor_name" name="vendor_name" required>
 
-    <h2>Create New Asset</h2>
-    <form id="assetsForm" >
-        <label for="medicine_asset">Medicine Asset:</label>
-        <input type="text" id="medicine_asset" name="medicine_asset" required><br><br>
-        
-        <label for="vendor_id">Vendor ID:</label>
-        <input type="text" id="vendor_id" name="vendor_id" required><br><br>
-        
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required><br><br>
-        
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" required><br><br>
-        
-        <label for="lot_number">Lot Number:</label>
-        <input type="text" id="lot_number" name="lot_number" required><br><br>
-        
-        <label for="manufacture_date">Manufacture Date:</label>
-        <input type="date" id="manufacture_date" name="manufacture_date" required><br><br>
-        
-        <label for="purchase_cost">Purchase Cost:</label>
-        <input type="number" id="purchase_cost" name="purchase_cost" required><br><br>
-        
-        <label for="storage_location">Storage Location:</label>
-        <input type="text" id="storage_location" name="storage_location" required><br><br>
-        
-        <label for="status">Status:</label>
-        <input type="text" id="status" name="status" required><br><br>
-        
-        <label for="expiration_date">Expiration Date:</label>
-        <input type="date" id="expiration_date" name="expiration_date" required><br><br>
-        
-        <label for="storage_conditions">Storage Conditions:</label>
-        <input type="text" id="storage_conditions" name="storage_conditions" required><br><br>
-        
-        <label for="useful_life_years">Useful Life (Years):</label>
-        <input type="number" id="useful_life_years" name="useful_life_years" required><br><br>
-        
-        <label for="current_stock">Current Stock:</label>
-        <input type="number" id="current_stock" name="current_stock" required><br><br>
-        
-        <label for="image_url">Image URL (Optional):</label>
-        <input type="url" id="image_url" name="image_url"><br><br>
-        
-        <button type="submit">Create Asset</button>
-    </form>
-</div>
-</div>
-<script src="/static/vendor.js"></script>
-<script src="/static/assets.js"></script>
+                <label for="vendor_address">Vendor Address:</label>
+                <input type="text" id="vendor_address" name="vendor_address" required>
+
+                <label for="contact_person">Contact Person:</label>
+                <input type="text" id="contact_person" name="contact_person" required>
+
+                <label for="contact_number">Contact Number:</label>
+                <input type="text" id="contact_number" name="contact_number" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="status">Status:</label>
+                <input type="text" id="status" name="status" required>
+
+                <button type="submit">Create Vendor</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h1>List of Assets</h1>
+
+            <table id="assets-table">
+                <thead>
+                    <tr>
+                        <th>Medicine Asset</th>
+                        <th>Vendor ID</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Lot Number</th>
+                        <th>Manufacture Date</th>
+                        <th>Purchase Cost</th>
+                        <th>Status</th>
+                        <th>Expiration Date</th>
+                        <th>Storage Conditions</th>
+                        <th>Useful Life (Years)</th>
+                        <th>Current Stock</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if assets %}
+                    {% for asset in assets %}
+                    <tr>
+                        <td id="asset-{{ asset.medicine_asset }}">{{ asset.medicine_asset }}</td>
+                        <td>{{ asset.vendor_id }}</td> 
+                        <td>{{ asset.description }}</td>
+                        <td>{{ asset.category }}</td>
+                        <td>{{ asset.lot_number }}</td>
+                        <td>{{ asset.manufacture_date }}</td>
+                        <td>${{ asset.purchase_cost }}</td>
+                        <td>{{ asset.status }}</td>
+                        <td>{{ asset.expiration_date }}</td>
+                        <td>{{ asset.storage_conditions }}</td>
+                        <td>{{ asset.useful_life_years }}</td>
+                        <td>{{ asset.current_stock }}</td>
+                        <td>
+                            {% if asset.image_url %}
+                                <img src="{{ asset.image_url }}" alt="Asset Image" />
+                            {% else %}
+                                No image
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="13">No assets available.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <h2>Create New Asset</h2>
+            <form id="assetsForm">
+                <label for="medicine_asset">Medicine Asset:</label>
+                <input type="text" id="medicine_asset" name="medicine_asset" required>
+
+                <label for="vendor_id">Vendor ID:</label>
+                <input type="text" id="vendor_id" name="vendor_id" required>
+
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" required>
+
+                <label for="lot_number">Lot Number:</label>
+                <input type="text" id="lot_number" name="lot_number" required>
+
+                <label for="manufacture_date">Manufacture Date:</label>
+                <input type="date" id="manufacture_date" name="manufacture_date" required>
+
+                <label for="purchase_cost">Purchase Cost:</label>
+                <input type="number" id="purchase_cost" name="purchase_cost" required>
+
+                <label for="storage_location">Storage Location:</label>
+                <input type="text" id="storage_location" name="storage_location" required>
+
+                <label for="status">Status:</label>
+                <input type="text" id="status" name="status" required>
+
+                <label for="expiration_date">Expiration Date:</label>
+                <input type="date" id="expiration_date" name="expiration_date" required>
+
+                <label for="storage_conditions">Storage Conditions:</label>
+                <input type="text" id="storage_conditions" name="storage_conditions" required>
+
+                <label for="useful_life_years">Useful Life (Years):</label>
+                <input type="number" id="useful_life_years" name="useful_life_years" required>
+
+                <label for="current_stock">Current Stock:</label>
+                <input type="number" id="current_stock" name="current_stock" required>
+
+                <label for="image_url">Image URL (Optional):</label>
+                <input type="url" id="image_url" name="image_url">
+
+                <button type="submit">Create Asset</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/vendor.js"></script>
+    <script src="/static/assets.js"></script>
 </body>
-
 </html>
