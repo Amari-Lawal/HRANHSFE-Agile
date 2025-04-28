@@ -4,8 +4,8 @@
 3. Improve Unittest Setup $
 4. Deploy to Google Cloud - See how DB will be deployed. 1. Sort out depenndecnies etc $
 5. Create user interface. $
-3. Update Vendor, Delete Vendor, Update Asset, Delete Asset Show Error Messages for no permission
-6. Create validations on UI %
+5. Update works $
+6. Do Delete, Fix update maintencne_date and other date, Change color, Check requirments %
 7. Maybe Change email, role and password %
 
 ## DB Schema Below

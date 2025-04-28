@@ -502,6 +502,14 @@
             const email = document.getElementById('update_email').value;
             const status = document.getElementById('update_status').value;
             console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
+            const formData = {
+                vendor_name: vendor_name,
+                vendor_address: form.vendor_address.value,
+                contact_person: form.contact_person.value,
+                contact_number: form.contact_number.value,
+                email: form.email.value,
+                status: form.status.value
+            };
             
             alert('Vendor updated successfully!');
             vendorModal.style.display = 'none';
