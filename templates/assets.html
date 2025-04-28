@@ -128,7 +128,7 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -138,11 +138,13 @@
 
         .modal-content {
             background-color: #fff;
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 20px;
             border-radius: 8px;
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -239,6 +241,7 @@
             <table id="assets-table">
                 <thead>
                     <tr>
+                        <th>Medicine ID</th>
                         <th>Medicine Asset</th>
                         <th>Vendor ID</th>
                         <th>Description</th>
@@ -246,6 +249,7 @@
                         <th>Lot Number</th>
                         <th>Manufacture Date</th>
                         <th>Purchase Cost</th>
+                        <th>Storage Location</th>
                         <th>Status</th>
                         <th>Expiration Date</th>
                         <th>Storage Conditions</th>
@@ -259,6 +263,7 @@
                     {% if assets %}
                     {% for asset in assets %}
                     <tr>
+                        <td>{{ asset.medicine_id }}</td>
                         <td id="asset-{{ asset.medicine_asset }}">{{ asset.medicine_asset }}</td>
                         <td>{{ asset.vendor_id }}</td> 
                         <td>{{ asset.description }}</td>
@@ -266,6 +271,7 @@
                         <td>{{ asset.lot_number }}</td>
                         <td>{{ asset.manufacture_date }}</td>
                         <td>${{ asset.purchase_cost }}</td>
+                        <td>{{ asset.storage_location}}</td>
                         <td>{{ asset.status }}</td>
                         <td>{{ asset.expiration_date }}</td>
                         <td>{{ asset.storage_conditions }}</td>
@@ -285,7 +291,7 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="14">No assets available.</td>
+                        <td colspan="15">No assets available.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -343,7 +349,7 @@
     <!-- Vendor Update Modal -->
     <div id="vendorModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2>Update Vendor</h2>
             <form id="updateVendorForm">
                 <input type="hidden" id="update_vendor_id" name="vendor_id">
@@ -367,11 +373,12 @@
     <!-- Asset Update Modal -->
     <div id="assetModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2>Update Asset</h2>
             <form id="updateAssetForm">
+                <input type="hidden" id="update_medicine_id" name="medicine_id">
                 <label for="update_medicine_asset">Medicine Asset:</label>
-                <input type="text" id="update_medicine_asset" name="medicine_asset">
+                <input type="text" id="update_medicine_asset" name="medicine_asset" required>
                 <label for="update_asset_vendor_id">Vendor ID:</label>
                 <input type="text" id="update_asset_vendor_id" name="vendor_id" required>
                 <label for="update_description">Description:</label>
@@ -384,6 +391,8 @@
                 <input type="date" id="update_manufacture_date" name="manufacture_date" required>
                 <label for="update_purchase_cost">Purchase Cost:</label>
                 <input type="number" id="update_purchase_cost" name="purchase_cost" required>
+                <label for="update_storage_location">Storage Location:</label>
+                <input type="text" id="update_storage_location" name="storage_location" required>
                 <label for="update_asset_status">Status:</label>
                 <input type="text" id="update_asset_status" name="status" required>
                 <label for="update_expiration_date">Expiration Date:</label>
@@ -425,6 +434,7 @@
                 document.getElementById('update_status').value = cells[6].innerText;
 
                 vendorModal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
             });
         });
 
@@ -436,40 +446,47 @@
                 const cells = row.getElementsByTagName('td');
 
                 // Populate modal fields
-                console.log(cells[1].innerText);
-                document.getElementById('update_medicine_asset').value = cells[0].innerText;
-                document.getElementById('update_asset_vendor_id').value = cells[1].innerText;
-                document.getElementById('update_description').value = cells[2].innerText;
-                document.getElementById('update_category').value = cells[3].innerText;
-                document.getElementById('update_lot_number').value = cells[4].innerText;
-                document.getElementById('update_manufacture_date').value = cells[5].innerText;
-                document.getElementById('update_purchase_cost').value = cells[6].innerText.replace('$', '');
-                document.getElementById('update_asset_status').value = cells[7].innerText;
-                document.getElementById('update_expiration_date').value = cells[8].innerText;
-                document.getElementById('update_storage_conditions').value = cells[9].innerText;
-                document.getElementById('update_useful_life_years').value = cells[10].innerText;
-                document.getElementById('update_current_stock').value = cells[11].innerText;
-                document.getElementById('update_image_url').value = cells[12].querySelector('img') ? cells[12].querySelector('img').src : '';
+                //console.log(cells,document.getElementById('update_medicine_id'));
+                document.getElementById('update_medicine_id').value = cells[0].innerText;
+                document.getElementById('update_medicine_asset').value = cells[1].innerText;
+                document.getElementById('update_asset_vendor_id').value = cells[2].innerText;
+                document.getElementById('update_description').value = cells[3].innerText;
+                document.getElementById('update_category').value = cells[4].innerText;
+                document.getElementById('update_lot_number').value = cells[5].innerText;
+                document.getElementById('update_manufacture_date').value = cells[6].innerText;
+                document.getElementById('update_purchase_cost').value = cells[7].innerText.replace('$', '');
+                document.getElementById('update_storage_location').value = cells[8].innerText;
+                document.getElementById('update_asset_status').value = cells[9].innerText;
+                document.getElementById('update_expiration_date').value = cells[10].innerText;
+                document.getElementById('update_storage_conditions').value = cells[11].innerText;
+                document.getElementById('update_useful_life_years').value = cells[12].innerText;
+                document.getElementById('update_current_stock').value = cells[13].innerText;
+                document.getElementById('update_image_url').value = cells[14].querySelector('img') ? cells[14].querySelector('img').src : '';
 
                 assetModal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
             });
         });
 
         // Close modals
         vendorClose.onclick = function() {
             vendorModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
         };
         assetClose.onclick = function() {
             assetModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
         };
 
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target == vendorModal) {
                 vendorModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
             }
             if (event.target == assetModal) {
                 assetModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
             }
         };
 
@@ -487,90 +504,99 @@
             console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
             
             alert('Vendor updated successfully!');
+            vendorModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
             // Optionally, send data to server here
         });
 
         // Update Asset Form Submission
-        document.getElementById('updateAssetForm').addEventListener('submit',async function(e) {
+        document.getElementById('updateAssetForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const medicineAsset = document.getElementById('update_medicine_asset').value;
-            // Update table cells
+            const medicine_id = document.getElementById('update_medicine_id').value;
+            const medicine_asset = document.getElementById('update_medicine_asset').value;
             const vendor_id = document.getElementById('update_asset_vendor_id').value;
             const description = document.getElementById('update_description').value;
             const category = document.getElementById('update_category').value;
             const lot_number = document.getElementById('update_lot_number').value;
             const manufacture_date = document.getElementById('update_manufacture_date').value;
-            const purchase_cost = `$${document.getElementById('update_purchase_cost').value}`;
-            const status = document.getElementById('update_status').value;
+            const purchase_cost = document.getElementById('update_purchase_cost').value;
+            const storage_location = document.getElementById('update_storage_location').value;
+            const status = document.getElementById('update_asset_status').value;
             const expiration_date = document.getElementById('update_expiration_date').value;
             const storage_conditions = document.getElementById('update_storage_conditions').value;
             const useful_life_years = document.getElementById('update_useful_life_years').value;
             const current_stock = document.getElementById('update_current_stock').value;
-            const imageUrl = document.getElementById('update_image_url').value;
+            const image_url = document.getElementById('update_image_url').value;
 
             const vendor_ids = document.getElementsByClassName('vendor_id');
-            //console.log(vendor_ids,Array.from(vendor_ids));
-            const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === form.vendor_id.value);
+            console.log(vendor_ids);
+            const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === vendor_id);
+            console.log(vendorIdExists);
             if (!vendorIdExists) {
                 alert("The vendor ID must be in the list.");
-                //scrollToVendorsId("vendors-title");
                 return;
             }
             
-            console.log(medicineAsset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, status, expiration_date, storage_conditions, useful_life_years, current_stock, imageUrl);
-            // Update the row in the table
+            console.log(medicine_asset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, storage_location, status, expiration_date, storage_conditions, useful_life_years, current_stock, image_url);
+            const converted_manufacture_date = new Date(manufacture_date);
+            // Prepare form data for server
             const formData = {
-                medicine_asset: medicineAsset,
-                vendor_id: vendor_id,
+                medicine_asset:medicine_asset ,
+                vendor_id :vendor_id,
                 description: description,
-                category: category,
-                lot_number: lot_number,
-                manufacture_date: manufacture_date,
+                category : category,
+                lot_number :lot_number,
+                manufacture_date : manufacture_date,
                 purchase_cost: purchase_cost,
-                storage_location: storage_location,
-                status: status,
-                expiration_date: expiration_date,
-                storage_conditions: storage_conditions,
-                useful_life_years: useful_life_years,
-                current_stock: current_stock,
-                image_url: imageUrl,
+                storage_location :storage_location,
+                status : status,
+                expiration_date : expiration_date,
+                storage_conditions : storage_conditions,
+                useful_life_years : useful_life_years,
+                current_stock : current_stock,
+                image_url :image_url
             };
+
             const accessToken = localStorage.getItem('access_token');
             if (!accessToken) {
                 alert("No access token found. Please log in.");
                 return;
             }
-            const response = await fetch("/api/v1/assets/update_medicine_asset", {
-                method: "PUT",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-            const data = await response.json();
-            console.log(data);
-            if (data.message) {
-                alert(data.message);
-                return;
-            }
-            if (data.error) {
-                alert("Error updating asset: " + data.error);
-                return;
-            }
-            if (!response.ok) {
-                alert("Error updating asset: " + data.message);
-                return;
-            }
 
-            assetModal.style.display = 'none';
-            alert('Asset updated successfully!');
-            window.location.reload();
-            // Optionally, send data to server here
+            try {
+                const response = await fetch(`/api/v1/assets/update_medicine_asset/${medicine_id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const data = await response.json();
+                console.log(data);
+                if (data.message) {
+                    alert(data.message);
+                    return;
+                }
+                if (data.error) {
+                    alert("Error updating asset: " + data.error);
+                    return;
+                }
+                if (!response.ok) {
+                    alert("Error updating asset: " + data.message);
+                    return;
+                }
+
+                assetModal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore scrolling
+                alert('Asset updated successfully!');
+                window.location.reload();
+            } catch (error) {
+                alert("Error updating asset: " + error.message);
+            }
         });
 
         // Custom :contains selector for case-sensitive text matching
-        // Note: This is a workaround since :contains is not a standard CSS selector
         document.querySelectorAll('td.vendor_id').forEach(td => {
             td.contains = function(text) {
                 return this.innerText === text;
