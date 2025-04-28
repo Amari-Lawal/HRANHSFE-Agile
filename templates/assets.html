@@ -485,12 +485,13 @@
             const email = document.getElementById('update_email').value;
             const status = document.getElementById('update_status').value;
             console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
+            
             alert('Vendor updated successfully!');
             // Optionally, send data to server here
         });
 
         // Update Asset Form Submission
-        document.getElementById('updateAssetForm').addEventListener('submit', function(e) {
+        document.getElementById('updateAssetForm').addEventListener('submit',async function(e) {
             e.preventDefault();
             const medicineAsset = document.getElementById('update_medicine_asset').value;
             // Update table cells
@@ -506,11 +507,65 @@
             const useful_life_years = document.getElementById('update_useful_life_years').value;
             const current_stock = document.getElementById('update_current_stock').value;
             const imageUrl = document.getElementById('update_image_url').value;
+
+            const vendor_ids = document.getElementsByClassName('vendor_id');
+            //console.log(vendor_ids,Array.from(vendor_ids));
+            const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === form.vendor_id.value);
+            if (!vendorIdExists) {
+                alert("The vendor ID must be in the list.");
+                //scrollToVendorsId("vendors-title");
+                return;
+            }
+            
             console.log(medicineAsset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, status, expiration_date, storage_conditions, useful_life_years, current_stock, imageUrl);
             // Update the row in the table
+            const formData = {
+                medicine_asset: medicineAsset,
+                vendor_id: vendor_id,
+                description: description,
+                category: category,
+                lot_number: lot_number,
+                manufacture_date: manufacture_date,
+                purchase_cost: purchase_cost,
+                storage_location: storage_location,
+                status: status,
+                expiration_date: expiration_date,
+                storage_conditions: storage_conditions,
+                useful_life_years: useful_life_years,
+                current_stock: current_stock,
+                image_url: imageUrl,
+            };
+            const accessToken = localStorage.getItem('access_token');
+            if (!accessToken) {
+                alert("No access token found. Please log in.");
+                return;
+            }
+            const response = await fetch("/api/v1/assets/update_medicine_asset", {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await response.json();
+            console.log(data);
+            if (data.message) {
+                alert(data.message);
+                return;
+            }
+            if (data.error) {
+                alert("Error updating asset: " + data.error);
+                return;
+            }
+            if (!response.ok) {
+                alert("Error updating asset: " + data.message);
+                return;
+            }
 
             assetModal.style.display = 'none';
             alert('Asset updated successfully!');
+            window.location.reload();
             // Optionally, send data to server here
         });
 
