@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets List</title>
     <style>
-        /* General body styles */
+        /* Existing styles unchanged */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -15,7 +15,6 @@
             line-height: 1.6;
         }
 
-        /* Container for both the vendor and asset tables */
         .container {
             display: flex;
             justify-content: space-between;
@@ -24,7 +23,6 @@
             flex-direction: column;
         }
 
-        /* Vendor and Asset sections */
         .section {
             flex: 1;
             background: #fff;
@@ -45,7 +43,6 @@
             text-align: center;
         }
 
-        /* Form styles */
         form {
             display: flex;
             flex-direction: column;
@@ -69,23 +66,26 @@
         }
 
         input[type="submit"],
-        button[type="submit"] {
+        button[type="submit"], 
+        button.update-vendor, 
+        button.update-asset {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
             cursor: pointer;
             border-radius: 4px;
             transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover,
-        button[type="submit"]:hover {
+        button[type="submit"]:hover,
+        button.update-vendor:hover,
+        button.update-asset:hover {
             background-color: #45a049;
         }
 
-        /* Table styles */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -108,14 +108,12 @@
             background-color: #f1f1f1;
         }
 
-        /* Image styles in table */
         img {
             width: 100px;
             height: auto;
             display: block;
         }
 
-        /* Responsive table */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -124,6 +122,42 @@
             table, form {
                 width: 100%;
             }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -146,7 +180,7 @@
                         <th>Status</th>
                         <th>Created At</th>
                         <th>Updated At</th>
-                        <th>Actions</th> <!-- Add a column for actions -->
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,7 +197,7 @@
                         <td>{{ vendor.created_at }}</td>
                         <td>{{ vendor.updated_at }}</td>
                         <td>
-                            <button class="update-vendor" data-id="{{ vendor.vendor_id }}">Update</button> <!-- Update button -->
+                            <button class="update-vendor" data-id="{{ vendor.vendor_id }}">Update</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -218,7 +252,7 @@
                         <th>Useful Life (Years)</th>
                         <th>Current Stock</th>
                         <th>Image</th>
-                        <th>Actions</th> <!-- Add a column for actions -->
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -245,7 +279,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button class="update-asset" data-id="{{ asset.medicine_asset }}">Update</button> <!-- Update button -->
+                            <button class="update-asset" data-id="{{ asset.medicine_asset }}">Update</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -306,7 +340,187 @@
         </div>
     </div>
 
-    <script src="/static/vendor.js"></script>
-    <script src="/static/assets.js"></script>
+    <!-- Vendor Update Modal -->
+    <div id="vendorModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Vendor</h2>
+            <form id="updateVendorForm">
+                <input type="hidden" id="update_vendor_id" name="vendor_id">
+                <label for="update_vendor_name">Vendor Name:</label>
+                <input type="text" id="update_vendor_name" name="vendor_name" required>
+                <label for="update_vendor_address">Vendor Address:</label>
+                <input type="text" id="update_vendor_address" name="vendor_address" required>
+                <label for="update_contact_person">Contact Person:</label>
+                <input type="text" id="update_contact_person" name="contact_person" required>
+                <label for="update_contact_number">Contact Number:</label>
+                <input type="text" id="update_contact_number" name="contact_number" required>
+                <label for="update_email">Email:</label>
+                <input type="email" id="update_email" name="email" required>
+                <label for="update_status">Status:</label>
+                <input type="text" id="update_status" name="status" required>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Asset Update Modal -->
+    <div id="assetModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Asset</h2>
+            <form id="updateAssetForm">
+                <label for="update_medicine_asset">Medicine Asset:</label>
+                <input type="text" id="update_medicine_asset" name="medicine_asset">
+                <label for="update_asset_vendor_id">Vendor ID:</label>
+                <input type="text" id="update_asset_vendor_id" name="vendor_id" required>
+                <label for="update_description">Description:</label>
+                <input type="text" id="update_description" name="description" required>
+                <label for="update_category">Category:</label>
+                <input type="text" id="update_category" name="category" required>
+                <label for="update_lot_number">Lot Number:</label>
+                <input type="text" id="update_lot_number" name="lot_number" required>
+                <label for="update_manufacture_date">Manufacture Date:</label>
+                <input type="date" id="update_manufacture_date" name="manufacture_date" required>
+                <label for="update_purchase_cost">Purchase Cost:</label>
+                <input type="number" id="update_purchase_cost" name="purchase_cost" required>
+                <label for="update_asset_status">Status:</label>
+                <input type="text" id="update_asset_status" name="status" required>
+                <label for="update_expiration_date">Expiration Date:</label>
+                <input type="date" id="update_expiration_date" name="expiration_date" required>
+                <label for="update_storage_conditions">Storage Conditions:</label>
+                <input type="text" id="update_storage_conditions" name="storage_conditions" required>
+                <label for="update_useful_life_years">Useful Life (Years):</label>
+                <input type="number" id="update_useful_life_years" name="useful_life_years" required>
+                <label for="update_current_stock">Current Stock:</label>
+                <input type="number" id="update_current_stock" name="current_stock" required>
+                <label for="update_image_url">Image URL (Optional):</label>
+                <input type="url" id="update_image_url" name="image_url">
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal handling
+        const vendorModal = document.getElementById('vendorModal');
+        const assetModal = document.getElementById('assetModal');
+        const vendorClose = vendorModal.querySelector('.close');
+        const assetClose = assetModal.querySelector('.close');
+
+        // Open Vendor Modal
+        document.querySelectorAll('.update-vendor').forEach(button => {
+            button.addEventListener('click', function() {
+                const vendorId = this.getAttribute('data-id');
+                const row = this.closest('tr');
+                const cells = row.getElementsByTagName('td');
+
+                // Populate modal fields
+                document.getElementById('update_vendor_id').value = vendorId;
+                document.getElementById('update_vendor_name').value = cells[1].innerText;
+                document.getElementById('update_vendor_address').value = cells[2].innerText;
+                document.getElementById('update_contact_person').value = cells[3].innerText;
+                document.getElementById('update_contact_number').value = cells[4].innerText;
+                document.getElementById('update_email').value = cells[5].innerText;
+                document.getElementById('update_status').value = cells[6].innerText;
+
+                vendorModal.style.display = 'block';
+            });
+        });
+
+        // Open Asset Modal
+        document.querySelectorAll('.update-asset').forEach(button => {
+            button.addEventListener('click', function() {
+                const medicineAsset = this.getAttribute('data-id');
+                const row = this.closest('tr');
+                const cells = row.getElementsByTagName('td');
+
+                // Populate modal fields
+                console.log(cells[1].innerText);
+                document.getElementById('update_medicine_asset').value = cells[0].innerText;
+                document.getElementById('update_asset_vendor_id').value = cells[1].innerText;
+                document.getElementById('update_description').value = cells[2].innerText;
+                document.getElementById('update_category').value = cells[3].innerText;
+                document.getElementById('update_lot_number').value = cells[4].innerText;
+                document.getElementById('update_manufacture_date').value = cells[5].innerText;
+                document.getElementById('update_purchase_cost').value = cells[6].innerText.replace('$', '');
+                document.getElementById('update_asset_status').value = cells[7].innerText;
+                document.getElementById('update_expiration_date').value = cells[8].innerText;
+                document.getElementById('update_storage_conditions').value = cells[9].innerText;
+                document.getElementById('update_useful_life_years').value = cells[10].innerText;
+                document.getElementById('update_current_stock').value = cells[11].innerText;
+                document.getElementById('update_image_url').value = cells[12].querySelector('img') ? cells[12].querySelector('img').src : '';
+
+                assetModal.style.display = 'block';
+            });
+        });
+
+        // Close modals
+        vendorClose.onclick = function() {
+            vendorModal.style.display = 'none';
+        };
+        assetClose.onclick = function() {
+            assetModal.style.display = 'none';
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == vendorModal) {
+                vendorModal.style.display = 'none';
+            }
+            if (event.target == assetModal) {
+                assetModal.style.display = 'none';
+            }
+        };
+
+        // Update Vendor Form Submission
+        document.getElementById('updateVendorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const vendorId = document.getElementById('update_vendor_id').value;
+            // Update table cells
+            const vendor_name = document.getElementById('update_vendor_name').value;
+            const vendor_address = document.getElementById('update_vendor_address').value;
+            const contact_person = document.getElementById('update_contact_person').value;
+            const contact_number = document.getElementById('update_contact_number').value;
+            const email = document.getElementById('update_email').value;
+            const status = document.getElementById('update_status').value;
+            console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
+            alert('Vendor updated successfully!');
+            // Optionally, send data to server here
+        });
+
+        // Update Asset Form Submission
+        document.getElementById('updateAssetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const medicineAsset = document.getElementById('update_medicine_asset').value;
+            // Update table cells
+            const vendor_id = document.getElementById('update_asset_vendor_id').value;
+            const description = document.getElementById('update_description').value;
+            const category = document.getElementById('update_category').value;
+            const lot_number = document.getElementById('update_lot_number').value;
+            const manufacture_date = document.getElementById('update_manufacture_date').value;
+            const purchase_cost = `$${document.getElementById('update_purchase_cost').value}`;
+            const status = document.getElementById('update_status').value;
+            const expiration_date = document.getElementById('update_expiration_date').value;
+            const storage_conditions = document.getElementById('update_storage_conditions').value;
+            const useful_life_years = document.getElementById('update_useful_life_years').value;
+            const current_stock = document.getElementById('update_current_stock').value;
+            const imageUrl = document.getElementById('update_image_url').value;
+            console.log(medicineAsset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, status, expiration_date, storage_conditions, useful_life_years, current_stock, imageUrl);
+            // Update the row in the table
+
+            assetModal.style.display = 'none';
+            alert('Asset updated successfully!');
+            // Optionally, send data to server here
+        });
+
+        // Custom :contains selector for case-sensitive text matching
+        // Note: This is a workaround since :contains is not a standard CSS selector
+        document.querySelectorAll('td.vendor_id').forEach(td => {
+            td.contains = function(text) {
+                return this.innerText === text;
+            };
+        });
+    </script>
 </body>
 </html>
