@@ -57,6 +57,14 @@ async def get_all_user_data(authorization: str = Header(None)):
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
+@router.get('/decode_user') # POST # allow all origins all methods.
+async def decode_user(authorization: str = Header(None)):
+    try:
+        decoded_user = hranhsjwt.authenticate_user(authorization)
+        return decoded_user
+    except Exception as ex:
+        print(type(ex),ex)
+        return {"error":f"{type(ex)},{ex}"}
 @router.get('/get_user_data') # POST # allow all origins all methods.
 async def get_user_data(authorization: str = Header(None)):
     try:
@@ -80,12 +88,12 @@ async def get_user_data(authorization: str = Header(None)):
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
 
-@router.put("/update_user/{user_id}")
-async def update_user(user_id:str,user:UpdateUser,authorization: str = Header(None)):
+@router.put("/update_user/{email}")
+async def update_user(email:str,user:UpdateUser,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
         if authenticated:
-            condition = f"{User.get_field_name('user_id')} = '{user_id}'"
+            condition = f"{User.get_field_name('email')} = '{email}'"
             user_exists = hracrud.check_exists(("*"),User.USERSTABLENAME,condition=condition)
             if user_exists:
                 hracrud.update_data(user.fields_from_existing_to_tuple(),user.values_from_existing_to_tuple(),table=User.USERSTABLENAME,condition=condition)

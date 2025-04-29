@@ -5,7 +5,7 @@
 4. Deploy to Google Cloud - See how DB will be deployed. 1. Sort out depenndecnies etc $
 5. Create user interface. $
 5. Update works $
-6.  Fix update maintencne_date and other date, Check requirments %
+6.  Check requirments %
 7. Maybe Change email, role and password %
 
 ## DB Schema Below

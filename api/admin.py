@@ -69,14 +69,14 @@ async def delete_medicine_asset(medicine_id:str,authorization: str = Header(None
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
-@router.delete("/delete_user/{user_id}")
-async def delete_user(user_id:str,authorization: str = Header(None)):
+@router.delete("/delete_user/{email}")
+async def delete_user(email:str,authorization: str = Header(None)):
     try:
         authenticated = hranhsjwt.check_user_role(authorization)
         if authenticated:
             admin_only = hranhsjwt.restrict_access(authorization)
             if admin_only:
-                condition = f"{User.get_field_name('user_id')} = '{user_id}'" 
+                condition = f"{User.get_field_name('email')} = '{email}'" 
                 user_exists = hracrud.check_exists(("*"),User.USERSTABLENAME,condition=condition)
                 if user_exists:
                     hracrud.delete_data(User.USERSTABLENAME,condition=condition)
