@@ -62,6 +62,7 @@ async def decode_user(authorization: str = Header(None)):
     try:
         decoded_user = hranhsjwt.authenticate_user(authorization)
         return decoded_user
+
     except Exception as ex:
         print(type(ex),ex)
         return {"error":f"{type(ex)},{ex}"}
