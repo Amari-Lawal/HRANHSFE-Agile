@@ -1,4 +1,4 @@
-from pydantic import BaseModel, UUID4, HttpUrl, Field,computed_field
+from pydantic import BaseModel, UUID4, HttpUrl, Field,computed_field,field_validator
 from typing import Optional, Union
 from datetime import date, datetime
 from decimal import Decimal
@@ -6,6 +6,7 @@ from typing import ClassVar
 import uuid
 from api.HRANHSExceptions import FieldNotExistException
 from api.HRANHSDB import HRANHSCRUD
+from api.HRANHSExceptions import InvalidImageURL
 from api.HRAModels import Vendor
 class MedicineAsset(BaseModel):
     MEDICINEASSETSTABLENAME: ClassVar[str] = "medical_assets"
@@ -65,3 +66,11 @@ class MedicineAsset(BaseModel):
         else:
             raise FieldNotExistException(value)
 
+    @field_validator('image_url')
+    def validate_phone_number(cls, v):
+        if v is None:
+            return v  # Accept None
+        # Match UK mobile numbers starting with 07 followed by 9 digits (total 11 digits)
+        if "https" not in v:
+            raise InvalidImageURL(InvalidImageURL.message)
+        return v

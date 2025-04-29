@@ -69,7 +69,8 @@
         button.update-vendor, 
         button.update-asset,
         button.update-user,
-        button.get-profile {
+        button.get-profile,
+        button.exit-app {
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -85,7 +86,8 @@
         button.update-vendor:hover,
         button.update-asset:hover,
         button.update-user:hover,
-        button.get-profile:hover {
+        button.get-profile:hover,
+        button.exit-app:hover {
             background-color: #45a049;
         }
 
@@ -188,6 +190,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            margin-bottom: 15px;
         }
 
         .profile-table th,
@@ -209,10 +212,14 @@
     </style>
 </head>
 <body>
+    
     <div class="container">
-        <h1>HRANHS Medicine Asset Management</h1>
-        <button class="get-profile">Get Profile Information</button>
+        <button class="exit-app" style="align-self: self-end;background-color: #c82333;">Exit</button>
         
+        <h1>HRANHS Medicine Asset Management</h1>
+        
+        <button class="get-profile">Get Profile Information</button>
+
         <div class="section">
             <h1 id="vendors-title">List of Vendors</h1>
 
@@ -513,5 +520,15 @@
     <script src="/static/assets.js"></script>
     <script src="/static/vendor.js"></script>
     <script src="/static/users.js"></script>
+    <script>
+        // Exit button with confirmation
+        const exitAppButton = document.querySelector('.exit-app');
+        exitAppButton.addEventListener('click', function() {
+            if (confirm('Are you sure you want to exit?')) {
+                localStorage.removeItem('access_token');
+                window.location.href = window.location.origin + "/";
+            }
+        });
+    </script>
 </body>
 </html>

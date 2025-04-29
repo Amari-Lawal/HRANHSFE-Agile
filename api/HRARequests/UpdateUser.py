@@ -35,6 +35,7 @@ class UpdateUser(BaseModel):
         if v is None:
             return v  # Accept None
         # Match UK mobile numbers starting with 07 followed by 9 digits (total 11 digits)
-        if not re.fullmatch(r'07\d{9}', v):
+        uk_phone_regex = re.compile(InvalidPhoneNumberError.regex)
+        if not uk_phone_regex.fullmatch(v):
             raise InvalidPhoneNumberError(InvalidPhoneNumberError.message)
         return v

@@ -1,4 +1,6 @@
-from pydantic import BaseModel, computed_field, Field
+from pydantic import BaseModel, computed_field, Field,field_validator
+import re
+from api.HRANHSExceptions import InvalidPhoneNumberError,InvalidEmailError
 from datetime import datetime
 import uuid
 from typing import Optional
@@ -47,6 +49,23 @@ class User(BaseModel):
             return value
         else:
             raise FieldNotExistException(value)
+    @field_validator('phone_number')
+    def validate_phone_number(cls, v):
+        if v is None:
+            return v  # Accept None
+        uk_phone_regex = re.compile(InvalidPhoneNumberError.regex)
+        if not uk_phone_regex.fullmatch(v):
+            raise InvalidPhoneNumberError(InvalidPhoneNumberError.message)
+        return v
+    @field_validator('email')
+    def validate_email(cls, v):
+        if v is None:
+            return v  # Accept None
+        # Match UK mobile numbers starting with 07 followed by 9 digits (total 11 digits)
+        if not re.fullmatch(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", v):
+            raise InvalidEmailError(InvalidEmailError.message)
+        return v
+
 
 class UserLogin(BaseModel):
     email:str

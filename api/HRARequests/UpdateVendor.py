@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field,field_validator
 from typing import Union,Optional
 from datetime import datetime
-from api.HRANHSExceptions import FieldNotExistException
-
+from api.HRANHSExceptions import FieldNotExistException,InvalidPhoneNumberError
+import re
 class UpdateVendor(BaseModel):
     vendor_name: Optional[str] = None 
     vendor_address: Optional[str] = None
@@ -31,3 +31,11 @@ class UpdateVendor(BaseModel):
         else:
             raise FieldNotExistException(value)
 
+    @field_validator('contact_number')
+    def validate_contact_number(cls, v):
+        if v is None:
+            return v  # Accept None
+        uk_phone_regex = re.compile(InvalidPhoneNumberError.regex)
+        if not uk_phone_regex.fullmatch(v):
+            raise InvalidPhoneNumberError(InvalidPhoneNumberError.message)
+        return v
