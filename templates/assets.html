@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assets List</title>
     <style>
-        /* Existing styles unchanged */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -86,6 +85,24 @@
             background-color: #45a049;
         }
 
+        button.delete-vendor,
+        button.delete-asset {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;
+        }
+
+        button.delete-vendor:hover,
+        button.delete-asset:hover {
+            background-color: #c82333;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -124,7 +141,6 @@
             }
         }
 
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -200,6 +216,7 @@
                         <td>{{ vendor.updated_at }}</td>
                         <td>
                             <button class="update-vendor" data-id="{{ vendor.vendor_id }}">Update</button>
+                            <button class="delete-vendor" data-id="{{ vendor.vendor_id }}">Delete</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -271,7 +288,7 @@
                         <td>{{ asset.lot_number }}</td>
                         <td>{{ asset.manufacture_date }}</td>
                         <td>${{ asset.purchase_cost }}</td>
-                        <td>{{ asset.storage_location}}</td>
+                        <td>{{ asset.storage_location }}</td>
                         <td>{{ asset.status }}</td>
                         <td>{{ asset.expiration_date }}</td>
                         <td>{{ asset.storage_conditions }}</td>
@@ -286,12 +303,13 @@
                         </td>
                         <td>
                             <button class="update-asset" data-id="{{ asset.medicine_asset }}">Update</button>
+                            <button class="delete-asset" data-id="{{ asset.medicine_id }}">Delete</button>
                         </td>
                     </tr>
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="15">No assets available.</td>
+                        <td colspan="16">No assets available.</td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -434,7 +452,7 @@
                 document.getElementById('update_status').value = cells[6].innerText;
 
                 vendorModal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                document.body.style.overflow = 'hidden';
             });
         });
 
@@ -446,7 +464,6 @@
                 const cells = row.getElementsByTagName('td');
 
                 // Populate modal fields
-                //console.log(cells,document.getElementById('update_medicine_id'));
                 document.getElementById('update_medicine_id').value = cells[0].innerText;
                 document.getElementById('update_medicine_asset').value = cells[1].innerText;
                 document.getElementById('update_asset_vendor_id').value = cells[2].innerText;
@@ -464,29 +481,109 @@
                 document.getElementById('update_image_url').value = cells[14].querySelector('img') ? cells[14].querySelector('img').src : '';
 
                 assetModal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Delete Vendor
+        document.querySelectorAll('.delete-vendor').forEach(button => {
+            button.addEventListener('click', async function() {
+                const vendorId = this.getAttribute('data-id');
+                if (!confirm(`Are you sure you want to delete vendor ID ${vendorId}?`)) {
+                    return;
+                }
+
+                const accessToken = localStorage.getItem('access_token');
+                if (!accessToken) {
+                    alert("No access token found. Please log in.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/v1/admin/delete_vendor/${vendorId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    const data = await response.json();
+                    if (data.error) {
+                        alert("Error deleting vendor: " + data.error);
+                        return;
+                    }
+                    if (!response.ok) {
+                        alert("Error deleting vendor: " + data.message);
+                        return;
+                    }
+
+                    alert('Vendor deleted successfully!');
+                    window.location.reload();
+                } catch (error) {
+                    alert("Error deleting vendor: " + error.message);
+                }
+            });
+        });
+
+        // Delete Asset
+        document.querySelectorAll('.delete-asset').forEach(button => {
+            button.addEventListener('click', async function() {
+                const medicineId = this.getAttribute('data-id');
+                if (!confirm(`Are you sure you want to delete medicine ID ${medicineId}?`)) {
+                    return;
+                }
+
+                const accessToken = localStorage.getItem('access_token');
+                if (!accessToken) {
+                    alert("No access token found. Please log in.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/v1/admin/delete_medicine_asset/${medicineId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    const data = await response.json();
+                    if (data.error) {
+                        alert("Error deleting asset: " + data.error);
+                        return;
+                    }
+                    if (!response.ok) {
+                        alert("Error deleting asset: " + data.message);
+                        return;
+                    }
+
+                    alert('Asset deleted successfully!');
+                    window.location.reload();
+                } catch (error) {
+                    alert("Error deleting asset: " + error.message);
+                }
             });
         });
 
         // Close modals
         vendorClose.onclick = function() {
             vendorModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            document.body.style.overflow = 'auto';
         };
         assetClose.onclick = function() {
             assetModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            document.body.style.overflow = 'auto';
         };
 
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target == vendorModal) {
                 vendorModal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restore scrolling
+                document.body.style.overflow = 'auto';
             }
             if (event.target == assetModal) {
                 assetModal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restore scrolling
+                document.body.style.overflow = 'auto';
             }
         };
 
@@ -494,7 +591,6 @@
         document.getElementById('updateVendorForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const vendorId = document.getElementById('update_vendor_id').value;
-            // Update table cells
             const vendor_name = document.getElementById('update_vendor_name').value;
             const vendor_address = document.getElementById('update_vendor_address').value;
             const contact_person = document.getElementById('update_contact_person').value;
@@ -503,17 +599,17 @@
             const status = document.getElementById('update_status').value;
             console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
             const formData = {
-                vendor_name: vendor_name,
-                vendor_address: form.vendor_address.value,
-                contact_person: form.contact_person.value,
-                contact_number: form.contact_number.value,
-                email: form.email.value,
-                status: form.status.value
+                vendor_name,
+                vendor_address,
+                contact_person,
+                contact_number,
+                email,
+                status
             };
             
             alert('Vendor updated successfully!');
             vendorModal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            document.body.style.overflow = 'auto';
             // Optionally, send data to server here
         });
 
@@ -537,32 +633,29 @@
             const image_url = document.getElementById('update_image_url').value;
 
             const vendor_ids = document.getElementsByClassName('vendor_id');
-            console.log(vendor_ids);
             const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === vendor_id);
-            console.log(vendorIdExists);
             if (!vendorIdExists) {
                 alert("The vendor ID must be in the list.");
                 return;
             }
             
             console.log(medicine_asset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, storage_location, status, expiration_date, storage_conditions, useful_life_years, current_stock, image_url);
-            const converted_manufacture_date = new Date(manufacture_date);
-            // Prepare form data for server
+            
             const formData = {
-                medicine_asset:medicine_asset ,
-                vendor_id :vendor_id,
-                description: description,
-                category : category,
-                lot_number :lot_number,
-                manufacture_date : manufacture_date,
-                purchase_cost: purchase_cost,
-                storage_location :storage_location,
-                status : status,
-                expiration_date : expiration_date,
-                storage_conditions : storage_conditions,
-                useful_life_years : useful_life_years,
-                current_stock : current_stock,
-                image_url :image_url
+                medicine_asset,
+                vendor_id,
+                description,
+                category,
+                lot_number,
+                manufacture_date,
+                purchase_cost,
+                storage_location,
+                status,
+                expiration_date,
+                storage_conditions,
+                useful_life_years,
+                current_stock,
+                image_url
             };
 
             const accessToken = localStorage.getItem('access_token');
@@ -582,10 +675,6 @@
                 });
                 const data = await response.json();
                 console.log(data);
-                if (data.message) {
-                    alert(data.message);
-                    return;
-                }
                 if (data.error) {
                     alert("Error updating asset: " + data.error);
                     return;
@@ -596,7 +685,7 @@
                 }
 
                 assetModal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Restore scrolling
+                document.body.style.overflow = 'auto';
                 alert('Asset updated successfully!');
                 window.location.reload();
             } catch (error) {
