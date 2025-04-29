@@ -120,23 +120,23 @@ const assetsForm = document.getElementById('assetsForm');
                 return;
             }
             
-            console.log(medicine_asset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, storage_location, status, expiration_date, storage_conditions, useful_life_years, current_stock, image_url);
-            
+            //console.log(medicine_asset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, storage_location, status, expiration_date, storage_conditions, useful_life_years, current_stock, image_url);
+            console.log(manufacture_date)
             const formData = {
-                medicine_asset,
-                vendor_id,
-                description,
-                category,
-                lot_number,
-                manufacture_date,
-                purchase_cost,
-                storage_location,
-                status,
-                expiration_date,
-                storage_conditions,
-                useful_life_years,
-                current_stock,
-                image_url
+                medicine_asset:medicine_asset,
+                vendor_id:vendor_id,
+                description:description,
+                category:category,
+                lot_number:lot_number,
+                manufacture_date:manufacture_date,
+                purchase_cost:purchase_cost,
+                storage_location:storage_location,
+                status:status,
+                expiration_date:expiration_date,
+                storage_conditions:storage_conditions,
+                useful_life_years:useful_life_years,
+                current_stock:current_stock,
+                image_url:image_url
             };
 
             const accessToken = localStorage.getItem('access_token');
@@ -217,14 +217,14 @@ assetsForm.addEventListener('submit', async (e) => {
         scrollToVendorsId("vendors-title");
         return;
     }
-
+    console.log(form.manufacture_date.value)
     const formData = {
         medicine_asset: form.medicine_asset.value,
         vendor_id: form.vendor_id.value,
         description: form.description.value,
         category: form.category.value,
         lot_number: form.lot_number.value,
-        manufacture_date: form.manufacture_date.value,
+        manufacture_date: form.manufacture_date.value ,
         purchase_cost: form.purchase_cost.value,
         storage_location: form.storage_location.value,
         status: form.status.value,

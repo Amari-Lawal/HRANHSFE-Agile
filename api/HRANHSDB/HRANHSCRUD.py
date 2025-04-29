@@ -1,7 +1,7 @@
 import base64
 from typing import List,Union
 from api.HRANHSDB.HRANHSSQL import HRANHSSQL
-from datetime import datetime
+from datetime import datetime,date
 class HRANHSCRUD:
     def __init__(self) -> None:
         self.hranhssql = HRANHSSQL()
@@ -74,6 +74,9 @@ class HRANHSCRUD:
             for field,value in zip(fieldstoupdate,values):
                 if not isinstance(value,str):
                     if isinstance(value,datetime):
+                        value = str(value)
+                        fieldstr = f"{field} = '{value}'"
+                    elif isinstance(value,date):
                         value = str(value)
                         fieldstr = f"{field} = '{value}'"
                     else:
