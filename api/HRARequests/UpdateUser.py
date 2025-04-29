@@ -11,12 +11,6 @@ class UpdateUser(BaseModel):
     phone_number: Optional[str] = None
     status: Optional[str] = None
     updated_at: datetime = Field(default_factory=datetime.now)
-    @field_validator('phone_number')
-    def validate_phone_number(cls, v):
-        # Match UK mobile numbers starting with 07 followed by 9 digits (total 11 digits)
-        if not re.fullmatch(r'07\d{9}', v):
-            raise InvalidPhoneNumberError(InvalidPhoneNumberError.message)
-        return v
     @classmethod
     def fields_to_tuple(cls) -> tuple:
         return tuple(cls.model_fields)
@@ -35,4 +29,12 @@ class UpdateUser(BaseModel):
             return value
         else:
             raise FieldNotExistException(value)
-
+        
+    @field_validator('phone_number')
+    def validate_phone_number(cls, v):
+        if v is None:
+            return v  # Accept None
+        # Match UK mobile numbers starting with 07 followed by 9 digits (total 11 digits)
+        if not re.fullmatch(r'07\d{9}', v):
+            raise InvalidPhoneNumberError(InvalidPhoneNumberError.message)
+        return v
