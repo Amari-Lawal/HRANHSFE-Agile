@@ -1,4 +1,26 @@
 const vendorForm = document.getElementById('vendorForm');
+// Open Vendor Modal
+const vendorModal = document.getElementById('vendorModal');
+const vendorClose = vendorModal.querySelector('.close');
+document.querySelectorAll('.update-vendor').forEach(button => {
+    button.addEventListener('click', function() {
+        const vendorId = this.getAttribute('data-id');
+        const row = this.closest('tr');
+        const cells = row.getElementsByTagName('td');
+
+        // Populate modal fields
+        document.getElementById('update_vendor_id').value = vendorId;
+        document.getElementById('update_vendor_name').value = cells[1].innerText;
+        document.getElementById('update_vendor_address').value = cells[2].innerText;
+        document.getElementById('update_contact_person').value = cells[3].innerText;
+        document.getElementById('update_contact_number').value = cells[4].innerText;
+        document.getElementById('update_email').value = cells[5].innerText;
+        document.getElementById('update_status').value = cells[6].innerText;
+
+        vendorModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    });
+});
 document.addEventListener("DOMContentLoaded", function() {
                 // Vendor update
                 const vendorButtons = document.querySelectorAll('.update-vendor');
@@ -73,7 +95,8 @@ vendorForm.addEventListener('submit', async (e) => {
     });
     const updatedVendors = await responsevendor.json();
     console.log(updatedVendors);    
-    updateVendorsTable(updatedVendors.vendors);
+    window.location.reload();
+    //updateVendorsTable(updatedVendors.vendors);
     scrollToVendorsId("vendors-title");
     } else {
         alert("Error creating vendor.");
@@ -85,6 +108,121 @@ vendorForm.addEventListener('submit', async (e) => {
   // You can now send vendorData in a fetch request if you want
   // Example: fetch('/api/vendors', { method: 'POST', body: JSON.stringify(vendorData) })
 
+});
+
+// Delete Vendor
+document.querySelectorAll('.delete-vendor').forEach(button => {
+    button.addEventListener('click', async function() {
+        const vendorId = this.getAttribute('data-id');
+        if (!confirm(`Are you sure you want to delete vendor ID ${vendorId}?`)) {
+            return;
+        }
+
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+            alert("No access token found. Please log in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/v1/admin/delete_vendor/${vendorId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            if (data.error) {
+                alert("Error deleting vendor: " + data.error);
+                return;
+            }
+            if (!response.ok) {
+                alert("Error deleting vendor: " + data.message);
+                return;
+            }
+
+            alert('Vendor deleted successfully!');
+            window.location.reload();
+        } catch (error) {
+            alert("Error deleting vendor: " + error.message);
+        }
+    });
+});
+ // Update Vendor Form Submission
+ document.getElementById('updateVendorForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const vendorId = document.getElementById('update_vendor_id').value;
+    const vendor_name = document.getElementById('update_vendor_name').value;
+    const vendor_address = document.getElementById('update_vendor_address').value;
+    const contact_person = document.getElementById('update_contact_person').value;
+    const contact_number = document.getElementById('update_contact_number').value;
+    const email = document.getElementById('update_email').value;
+    const status = document.getElementById('update_status').value;
+    console.log(vendorId, vendor_name, vendor_address, contact_person, contact_number, email, status);
+    const formData = {
+        vendor_name,
+        vendor_address,
+        contact_person,
+        contact_number,
+        email,
+        status
+    };
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+        alert("No access token found. Please log in.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/v1/vendors/update_vendor/${vendorId}`, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data.error) {
+            alert("Error updating asset: " + data.error);
+            return;
+        }
+        if (!response.ok) {
+            alert("Error updating asset: " + data.message);
+            return;
+        }
+
+        assetModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        alert('Vendor updated successfully!');
+        window.location.reload();
+    } catch (error) {
+        alert("Error updating asset: " + error.message);
+    }
+    
+
+    // Optionally, send data to server here
+});
+
+// Close modal
+vendorClose.onclick = function() {
+    vendorModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+};
+window.onclick = function(event) {
+    if (event.target == vendorModal) {
+        vendorModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Custom :contains selector for case-sensitive text matching
+document.querySelectorAll('td.vendor_id').forEach(td => {
+    td.contains = function(text) {
+        return this.innerText === text;
+    };
 });
 
 function updateVendorsTable(vendors) {

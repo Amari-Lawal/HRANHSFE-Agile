@@ -1,4 +1,178 @@
 const assetsForm = document.getElementById('assetsForm');
+        // Modal handling
+        
+        const assetModal = document.getElementById('assetModal');
+
+        const assetClose = assetModal.querySelector('.close');
+
+
+
+        // Open Asset Modal
+        document.querySelectorAll('.update-asset').forEach(button => {
+            button.addEventListener('click', function() {
+                const medicineAsset = this.getAttribute('data-id');
+                const row = this.closest('tr');
+                const cells = row.getElementsByTagName('td');
+
+                // Populate modal fields
+                document.getElementById('update_medicine_id').value = cells[0].innerText;
+                document.getElementById('update_medicine_asset').value = cells[1].innerText;
+                document.getElementById('update_asset_vendor_id').value = cells[2].innerText;
+                document.getElementById('update_description').value = cells[3].innerText;
+                document.getElementById('update_category').value = cells[4].innerText;
+                document.getElementById('update_lot_number').value = cells[5].innerText;
+                document.getElementById('update_manufacture_date').value = cells[6].innerText;
+                document.getElementById('update_purchase_cost').value = cells[7].innerText.replace('$', '');
+                document.getElementById('update_storage_location').value = cells[8].innerText;
+                document.getElementById('update_asset_status').value = cells[9].innerText;
+                document.getElementById('update_expiration_date').value = cells[10].innerText;
+                document.getElementById('update_storage_conditions').value = cells[11].innerText;
+                document.getElementById('update_useful_life_years').value = cells[12].innerText;
+                document.getElementById('update_current_stock').value = cells[13].innerText;
+                document.getElementById('update_image_url').value = cells[14].querySelector('img') ? cells[14].querySelector('img').src : '';
+
+                assetModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+
+
+        // Delete Asset
+        document.querySelectorAll('.delete-asset').forEach(button => {
+            button.addEventListener('click', async function() {
+                const medicineId = this.getAttribute('data-id');
+                if (!confirm(`Are you sure you want to delete medicine ID ${medicineId}?`)) {
+                    return;
+                }
+
+                const accessToken = localStorage.getItem('access_token');
+                if (!accessToken) {
+                    alert("No access token found. Please log in.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/v1/admin/delete_medicine_asset/${medicineId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    const data = await response.json();
+                    if (data.error) {
+                        alert("Error deleting asset: " + data.error);
+                        return;
+                    }
+                    if (!response.ok) {
+                        alert("Error deleting asset: " + data.message);
+                        return;
+                    }
+
+                    alert('Asset deleted successfully!');
+                    window.location.reload();
+                } catch (error) {
+                    alert("Error deleting asset: " + error.message);
+                }
+            });
+        });
+
+
+        assetClose.onclick = function() {
+            assetModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == assetModal) {
+                assetModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        };
+
+       
+
+        // Update Asset Form Submission
+        document.getElementById('updateAssetForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const medicine_id = document.getElementById('update_medicine_id').value;
+            const medicine_asset = document.getElementById('update_medicine_asset').value;
+            const vendor_id = document.getElementById('update_asset_vendor_id').value;
+            const description = document.getElementById('update_description').value;
+            const category = document.getElementById('update_category').value;
+            const lot_number = document.getElementById('update_lot_number').value;
+            const manufacture_date = document.getElementById('update_manufacture_date').value;
+            const purchase_cost = document.getElementById('update_purchase_cost').value;
+            const storage_location = document.getElementById('update_storage_location').value;
+            const status = document.getElementById('update_asset_status').value;
+            const expiration_date = document.getElementById('update_expiration_date').value;
+            const storage_conditions = document.getElementById('update_storage_conditions').value;
+            const useful_life_years = document.getElementById('update_useful_life_years').value;
+            const current_stock = document.getElementById('update_current_stock').value;
+            const image_url = document.getElementById('update_image_url').value;
+
+            const vendor_ids = document.getElementsByClassName('vendor_id');
+            const vendorIdExists = Array.from(vendor_ids).some(vendor => vendor.innerHTML === vendor_id);
+            if (!vendorIdExists) {
+                alert("The vendor ID must be in the list.");
+                return;
+            }
+            
+            console.log(medicine_asset, vendor_id, description, category, lot_number, manufacture_date, purchase_cost, storage_location, status, expiration_date, storage_conditions, useful_life_years, current_stock, image_url);
+            
+            const formData = {
+                medicine_asset,
+                vendor_id,
+                description,
+                category,
+                lot_number,
+                manufacture_date,
+                purchase_cost,
+                storage_location,
+                status,
+                expiration_date,
+                storage_conditions,
+                useful_life_years,
+                current_stock,
+                image_url
+            };
+
+            const accessToken = localStorage.getItem('access_token');
+            if (!accessToken) {
+                alert("No access token found. Please log in.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/v1/assets/update_medicine_asset/${medicine_id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const data = await response.json();
+                console.log(data);
+                if (data.error) {
+                    alert("Error updating asset: " + data.error);
+                    return;
+                }
+                if (!response.ok) {
+                    alert("Error updating asset: " + data.message);
+                    return;
+                }
+
+                assetModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                alert('Asset updated successfully!');
+                window.location.reload();
+            } catch (error) {
+                alert("Error updating asset: " + error.message);
+            }
+        });
 
 document.addEventListener("DOMContentLoaded", function() {
     // Asset update
@@ -95,7 +269,8 @@ assetsForm.addEventListener('submit', async (e) => {
         });
         const updatedassets = await responseasset.json();
         //console.log(updatedassets);    
-        updateassetsTable(updatedassets.medicine_assets);
+        window.location.reload();
+        //updateassetsTable(updatedassets.medicine_assets);
         scrollToVendorsId(`assets-table`);
     } else {
         alert("Error creating asset.");
