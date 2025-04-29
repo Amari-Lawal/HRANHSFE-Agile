@@ -588,7 +588,7 @@
         };
 
         // Update Vendor Form Submission
-        document.getElementById('updateVendorForm').addEventListener('submit', function(e) {
+        document.getElementById('updateVendorForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const vendorId = document.getElementById('update_vendor_id').value;
             const vendor_name = document.getElementById('update_vendor_name').value;
@@ -606,10 +606,41 @@
                 email,
                 status
             };
+            const accessToken = localStorage.getItem('access_token');
+            if (!accessToken) {
+                alert("No access token found. Please log in.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/v1/vendors/update_vendor/${vendorId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const data = await response.json();
+                console.log(data);
+                if (data.error) {
+                    alert("Error updating asset: " + data.error);
+                    return;
+                }
+                if (!response.ok) {
+                    alert("Error updating asset: " + data.message);
+                    return;
+                }
+
+                assetModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                alert('Vendor updated successfully!');
+                window.location.reload();
+            } catch (error) {
+                alert("Error updating asset: " + error.message);
+            }
             
-            alert('Vendor updated successfully!');
-            vendorModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+  
             // Optionally, send data to server here
         });
 
