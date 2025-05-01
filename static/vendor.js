@@ -75,7 +75,7 @@ vendorForm.addEventListener('submit', async (e) => {
         body: JSON.stringify(formData),
     });
     const data = await response.json();
-    console.log(data);
+    console.log("hi",data);
 
     if (response.ok) {
         // Reload the vendors table without refreshing the entire page
@@ -99,7 +99,12 @@ vendorForm.addEventListener('submit', async (e) => {
     //updateVendorsTable(updatedVendors.vendors);
     scrollToVendorsId("vendors-title");
     } else {
-        alert("Error creating vendor.");
+        if (data.error){
+            alert(data.error)
+        }
+        else{
+            alert("Error creating vendor.");
+        }
     
     } 
         

@@ -254,7 +254,7 @@ assetsForm.addEventListener('submit', async (e) => {
         // Reload the assets table without refreshing the entire page
 
         if (data.error) {
-            alert(asset.error);
+            alert(data.error);
             return;
         }
         else if (data.message) {
@@ -273,7 +273,13 @@ assetsForm.addEventListener('submit', async (e) => {
         //updateassetsTable(updatedassets.medicine_assets);
         scrollToVendorsId(`assets-table`);
     } else {
-        alert("Error creating asset.");
+        if (data.error){
+            alert(data.error)
+        }
+        else{
+            alert("Error creating asset.");
+        }
+        
 
     }
 
