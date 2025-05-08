@@ -1,4 +1,4 @@
-# HRANHSAI Asset Management Cloud Run FastAPI App
+# HRANHS Asset Management Cloud Run FastAPI App
 
 To run the app run:
 ```
